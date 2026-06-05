@@ -927,6 +927,40 @@ summary{
     border-bottom:1px solid var(--line);
 }
 
+.match-odds{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:6px;
+    font-size:0.78rem;
+    color:var(--muted);
+}
+
+.match-odds-bar{
+    flex:1;
+    max-width:160px;
+    height:4px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+}
+
+.match-odds-fill{
+    height:100%;
+    border-radius:999px;
+    background:var(--accent);
+}
+
+.match-odds-winner{
+    color:var(--accent);
+    font-weight:700;
+}
+
+.match-odds-loser{
+    color:var(--muted);
+}
+
 /* FOOTER */
 footer{
     text-align:center;
@@ -1491,14 +1525,17 @@ nav ul li a{
   const matchResults = [
     {
       winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
+      prob: { winner: 73, loser: 27 },
       mqs: { leadChanges: 7, closeness: 5, upsetFactor: 4 }
     },
     {
       winner: "Ansh J", loser: "Anthony A", score: "5 — 1", type: "friendly",
+      prob: { winner: 65, loser: 35 },
       mqs: { leadChanges: 1, closeness: 3, upsetFactor: 2 }
     },
     {
       winner: "Parker G", loser: "Ansh J", score: "5 — 2", type: "friendly",
+      prob: { winner: 64, loser: 36 },
       mqs: { leadChanges: 4, closeness: 4, upsetFactor: 3 }
     },
   ];
@@ -1832,6 +1869,18 @@ nav ul li a{
 
     const group = document.createElement("div");
     group.className = "match-group";
+
+    const probHTML = m.prob ? `
+      <div class="match-odds">
+        <span class="match-odds-winner">${m.prob.winner}%</span>
+        <div class="match-odds-bar">
+          <div class="match-odds-fill" style="width:${m.prob.winner}%"></div>
+        </div>
+        <span class="match-odds-loser">${m.prob.loser}%</span>
+      </div>
+      <div style="text-align:center; font-size:0.7rem; color:var(--muted); margin-top:2px; letter-spacing:0.5px; text-transform:uppercase;">Pre-match odds</div>
+    ` : "";
+
     group.innerHTML = `
       ${!isOfficial ? `<div class="friendly-tag">${m.type.charAt(0).toUpperCase() + m.type.slice(1)}</div>` : ""}
       <div class="match">
@@ -1839,6 +1888,7 @@ nav ul li a{
         <span class="match-score">${m.score}</span>
         <span class="match-loser">${m.loser}</span>
       </div>
+      ${probHTML}
       ${mqsHTML}
     `;
     matchCard.appendChild(group);
