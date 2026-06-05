@@ -1201,14 +1201,21 @@ nav ul li a{
     p.points = matchHistory
       .filter(m => m.player === p.name && m.type !== "friendly")
       .reduce((sum, m) => sum + m.myScore, 0);
+
+    // Point differential: points scored minus points allowed
+    p.pointsAllowed = matchHistory
+      .filter(m => m.player === p.name && m.type !== "friendly")
+      .reduce((sum, m) => sum + m.oppScore, 0);
+    p.diff = p.points - p.pointsAllowed;
   });
 
   // Calculate win % and sort
+  // Tiebreakers: 1) Win %  2) Most wins  3) Point differential
   players.forEach(p => {
     const total = p.wins + p.losses;
     p.pct = total > 0 ? p.wins / total : 0;
   });
-  players.sort((a, b) => b.pct - a.pct || b.wins - a.wins || a.losses - b.losses);
+  players.sort((a, b) => b.pct - a.pct || b.wins - a.wins || b.diff - a.diff);
 
   // Build standings table
   const tbody = document.getElementById("standings-body");
