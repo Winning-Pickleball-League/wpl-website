@@ -1368,11 +1368,11 @@ nav ul li a{
   const matchResults = [
     {
       winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
-      mqs: { leadChanges: 7, closeness: 5, upsetFactor: 4 }
+      mqs: { leadChanges: 7, closeness: 6, upsetFactor: 6 }
     },
     {
       winner: "Ansh J", loser: "Anthony A", score: "5 — 1", type: "friendly",
-      mqs: { leadChanges: 1, closeness: 3, upsetFactor: 2 }
+      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 2 }
     },
     {
       winner: "Parker G", loser: "Ansh J", score: "5 — 2", type: "friendly",
@@ -1414,7 +1414,7 @@ nav ul li a{
     const momB = streakVal(pB.streak);
     const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.08;
 
-    let rawA = (wrA * 0.20) + (h2hRateA * 0.30) + ((0.5 + momA - momB) * 0.20) + ((0.5 + rankEdgeA) * 0.30);
+    let rawA = (wrA * 0.20) + (h2hRateA * 0.35) + ((0.5 + momA - momB) * 0.10) + ((0.5 + rankEdgeA) * 0.35);
     rawA = Math.max(0.05, Math.min(0.95, rawA));
     const probA = Math.round(rawA * 100);
     const probB = 100 - probA;
