@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WPL - Winners Pickleball League</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#0b0b0b;
+    --card:#151515;
+    --accent:#d2b48c;
+    --text:#ffffff;
+    --muted:#b5b5b5;
+    --line:rgba(255,255,255,0.08);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* NAV */
+nav{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:#0d0d0d;
+    border-bottom:1px solid var(--line);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 7%;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.logo{
+    font-family:'Oswald',sans-serif;
+    font-size:2rem;
+    color:var(--accent);
+    letter-spacing:2px;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+nav a{
+    color:var(--text);
+    text-decoration:none;
+    font-weight:500;
+    font-size:0.95rem;
+}
+
+nav a:hover{
+    color:var(--accent);
+}
+
+/* HERO */
+.hero{
+    min-height:70vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:60px 20px;
+    background:
+    linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+    url("https://images.unsplash.com/photo-1626224583764-4fdf1f4f97cf?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+}
+
+.hero h1{
+    font-family:'Oswald',sans-serif;
+    font-size:6rem;
+    color:var(--accent);
+    letter-spacing:2px;
+}
+
+.hero h2{
+    font-size:2rem;
+    font-weight:500;
+    margin-bottom:15px;
+}
+
+.hero p{
+    color:var(--muted);
+    max-width:600px;
+    margin:15px auto;
+}
+
+.btn{
+    display:inline-block;
+    background:var(--accent);
+    color:black;
+    padding:14px 26px;
+    border-radius:10px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+/* SECTIONS */
+section{
+    padding:70px 7%;
+}
+
+.section-title{
+    font-family:'Oswald',sans-serif;
+    font-size:2.4rem;
+    color:var(--accent);
+    margin-bottom:10px;
+}
+
+.card{
+    background:var(--card);
+    padding:22px;
+    border-radius:18px;
+    border:1px solid var(--line);
+}
+
+/* WEEK TAG */
+.week-tag{
+    display:inline-block;
+    margin:10px 0 15px;
+    padding:6px 14px;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    border-radius:999px;
+    font-size:0.9rem;
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+th{color:var(--accent);}
+
+tr{border-bottom:1px solid var(--line);}
+
+/* MATCHES */
+.match{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    color:var(--muted);
+}
+
+/* RANKINGS */
+.rank-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+}
+
+details{
+    margin-top:10px;
+}
+
+summary{
+    cursor:pointer;
+    color:var(--accent);
+}
+
+/* PLAYERS */
+.players{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+}
+
+.player-card{
+    background:var(--card);
+    padding:20px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    text-align:center;
+}
+
+.player-card h3{
+    margin-bottom:4px;
+    font-size:1rem;
+}
+
+.avatar{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:var(--accent);
+    margin:0 auto 10px;
+}
+
+.player-stats{
+    display:flex;
+    justify-content:space-around;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+}
+
+.player-stat{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+}
+
+.player-stat span:first-child{
+    font-size:1.1rem;
+    font-weight:700;
+    color:var(--accent);
+}
+
+.player-stat span:last-child{
+    font-size:0.7rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+.player-ranking{
+    display:inline-block;
+    margin-top:6px;
+    font-size:0.8rem;
+    color:var(--muted);
+}
+
+/* PLAYER OF THE WEEK */
+.potw-card{
+    background:var(--card);
+    border:1px solid var(--accent);
+    border-radius:18px;
+    padding:28px;
+    display:flex;
+    align-items:center;
+    gap:24px;
+    margin-bottom:20px;
+}
+
+.potw-trophy{
+    font-size:3rem;
+    flex-shrink:0;
+}
+
+.potw-label{
+    font-size:0.8rem;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:var(--muted);
+    margin-bottom:4px;
+}
+
+.potw-name{
+    font-family:'Oswald',sans-serif;
+    font-size:2rem;
+    color:gold;
+    margin-bottom:8px;
+}
+
+.potw-reason{
+    color:var(--muted);
+    font-size:0.95rem;
+    line-height:1.6;
+}
+
+.potw-record{
+    display:inline-block;
+    margin-top:10px;
+    padding:4px 12px;
+    border:1px solid var(--accent);
+    border-radius:999px;
+    font-size:0.85rem;
+    color:var(--accent);
+}
+
+@media(max-width:800px){
+.potw-card{
+    flex-direction:column;
+    text-align:center;
+}
+}
+
+/* STATS */
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.stat-box{
+    background:var(--card);
+    padding:22px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    text-align:center;
+}
+
+.stat-box h3{color:var(--muted);}
+
+.stat-box p{
+    font-size:2rem;
+    color:var(--accent);
+    margin-top:10px;
+    font-weight:700;
+}
+
+/* NEWS */
+.news-card{
+    background:var(--card);
+    padding:22px;
+    border-radius:18px;
+    border:1px solid var(--line);
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:40px;
+    color:var(--muted);
+    border-top:1px solid var(--line);
+}
+
+.hamburger{
+    display:none;
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-size:1.8rem;
+    cursor:pointer;
+}
+
+/* TABLE SCROLL WRAPPER */
+.table-scroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+.hero h1{font-size:3.5rem;}
+.hero h2{font-size:1.4rem;}
+
+section{
+    padding:40px 4%;
+}
+
+.hamburger{
+    display:block;
+}
+
+nav ul{
+    display:none;
+    width:100%;
+    flex-direction:column;
+    gap:0;
+}
+
+nav ul.open{
+    display:flex;
+}
+
+nav ul li a{
+    display:block;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.players{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.player-stat span:first-child{
+    font-size:0.95rem;
+}
+
+.player-stat span:last-child{
+    font-size:0.65rem;
+}
+
+.player-stats{
+    gap:4px;
+}
+
+.player-stat:last-child{
+    display:none;
+}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+<div class="logo">WPL</div>
+<button class="hamburger" onclick="toggleMenu()">☰</button>
+<ul id="nav-menu">
+<li><a href="#standings" onclick="toggleMenu()">Standings</a></li>
+<li><a href="#rankings" onclick="toggleMenu()">Rankings</a></li>
+<li><a href="#players" onclick="toggleMenu()">Players</a></li>
+<li><a href="#stats" onclick="toggleMenu()">Leaders</a></li>
+<li><a href="#matches" onclick="toggleMenu()">Results</a></li>
+<li><a href="#news" onclick="toggleMenu()">News</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div>
+<h1>WPL</h1>
+<h2>Winners Pickleball League</h2>
+<p>Compete. Improve. Win. Every match matters.</p>
+<a class="btn" href="#standings">View Standings</a>
+</div>
+</section>
+
+<!-- STANDINGS -->
+<section id="standings">
+<h2 class="section-title">Standings</h2>
+
+<div class="week-tag">Week 1</div>
+
+<div class="card">
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>#</th><th>Player</th><th>W</th><th>L</th><th>Win %</th><th>Streak</th>
+</tr>
+</thead>
+<tbody id="standings-body">
+<!-- Auto-generated by JS below -->
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- RANKINGS -->
+<section id="rankings">
+<h2 class="section-title">Power Rankings</h2>
+
+<div class="card">
+<div class="rank-item"><span>#1 Parker G</span><span>—</span></div>
+<div class="rank-item"><span>#2 Grady B</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#3 Ansh J</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#4 Seth C</span><span>—</span></div>
+<div class="rank-item"><span>#5 Larin D</span><span>—</span></div>
+
+<details>
+<summary>Show More</summary>
+<div class="rank-item"><span>#6 Anthony A</span><span style="color:green">▲4</span></div>
+<div class="rank-item"><span>#7 Isaac T</span><span>—</span></div>
+<div class="rank-item"><span>#8 Amir A</span><span>—</span></div>
+<div class="rank-item"><span>#9 Hunter P</span><span>—</span></div>
+<div class="rank-item"><span>#10 Zaeem N</span><span style="color:red">▼3</span></div>
+</details>
+</div>
+</section>
+
+<!-- PLAYERS -->
+<section id="players">
+<h2 class="section-title">Players</h2>
+<div class="players" id="players-grid">
+<!-- Auto-generated by JS below -->
+</div>
+</section>
+
+<!-- LEADERS -->
+<section id="stats">
+<h2 class="section-title">League Leaders</h2>
+
+<div id="potw-card"></div>
+
+<div class="stats-grid" id="leaders-grid">
+</div>
+</section>
+<section id="matches">
+<h2 class="section-title">Match Results</h2>
+
+<div class="card">
+<div class="match"><span>Ansh J</span><span>15-9 vs Anthony A</span></div>
+<div class="match"><span>(FRIENDLY) Ansh J</span><span>5-1 vs Anthony A</span></div>
+<div class="match"><span>(FRIENDLY) Parker G</span><span>5-2 vs Ansh J</span></div>
+<div class="match"><span>Zaeem N</span><span>0-0 vs Isaac T</span></div>
+</div>
+</section>
+
+<!-- NEWS -->
+<section id="news">
+<h2 class="section-title">News</h2>
+<div id="news-featured"></div>
+<div id="news-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:15px; margin-top:15px;"></div>
+</section>
+
+<script>
+  // ── EDIT PLAYER DATA HERE ─────────────────────────────────────────
+  // Update wins, losses, streak, ranking, and points after each week.
+  // points: total points scored across all matches
+  // streak: '🔥 W3' for win streak, '🧊 L2' for loss streak, '—' for none
+  // ranking: power ranking number
+  const players = [
+    { name: "Parker G",  wins: 0, losses: 0, streak: "—", ranking: 2,  points: 0  },
+    { name: "Grady B",   wins: 0, losses: 0, streak: "—", ranking: 3,  points: 0  },
+    { name: "Ansh J",    wins: 1, losses: 0, streak: "—", ranking: 1,  points: 15 },
+    { name: "Seth C",    wins: 0, losses: 0, streak: "—", ranking: 4,  points: 0  },
+    { name: "Larin D",   wins: 0, losses: 0, streak: "—", ranking: 5,  points: 0  },
+    { name: "Isaac T",   wins: 0, losses: 0, streak: "—", ranking: 6,  points: 0  },
+    { name: "Amir A",    wins: 0, losses: 0, streak: "—", ranking: 7,  points: 0  },
+    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—", ranking: 8,  points: 0  },
+    { name: "Hunter P",  wins: 0, losses: 0, streak: "—", ranking: 9,  points: 0  },
+    { name: "Anthony A", wins: 0, losses: 1, streak: "—", ranking: 10, points: 9  },
+  ];
+  // ──────────────────────────────────────────────────────────────────
+
+  // Calculate win % and sort
+  players.forEach(p => {
+    const total = p.wins + p.losses;
+    p.pct = total > 0 ? p.wins / total : 0;
+  });
+  players.sort((a, b) => b.pct - a.pct || b.wins - a.wins);
+
+  // Build standings table
+  const tbody = document.getElementById("standings-body");
+  players.forEach((p, i) => {
+    const rank = i + 1;
+    const pctDisplay = (p.wins + p.losses) > 0
+      ? Math.round(p.pct * 100) + "%" : "0%";
+
+    let borderStyle = "";
+    if (rank === 1) borderStyle = "border-left:4px solid gold;";
+    else if (rank === 2) borderStyle = "border-left:4px solid silver;";
+    else if (rank === 3) borderStyle = "border-left:4px solid #cd7f32;";
+
+    const tr = document.createElement("tr");
+    if (borderStyle) tr.style.cssText = borderStyle;
+    tr.innerHTML = `
+      <td>${rank}</td>
+      <td>${p.name}</td>
+      <td>${p.wins}</td>
+      <td>${p.losses}</td>
+      <td>${pctDisplay}</td>
+      <td>${p.streak}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Build player cards
+  const playersGrid = document.getElementById("players-grid");
+  players.forEach(p => {
+    const total = p.wins + p.losses;
+    const pctDisplay = total > 0 ? Math.round(p.pct * 100) + "%" : "0%";
+    const card = document.createElement("div");
+    card.className = "player-card";
+    card.innerHTML = `
+      <div class="avatar"></div>
+      <h3>${p.name}</h3>
+      <div class="player-ranking">Ranked #${p.ranking}</div>
+      <div class="player-stats">
+        <div class="player-stat">
+          <span>${p.wins}</span>
+          <span>Wins</span>
+        </div>
+        <div class="player-stat">
+          <span>${p.losses}</span>
+          <span>Losses</span>
+        </div>
+        <div class="player-stat">
+          <span>${pctDisplay}</span>
+          <span>Win %</span>
+        </div>
+        <div class="player-stat">
+          <span>${p.points}</span>
+          <span>Points</span>
+        </div>
+      </div>
+    `;
+    playersGrid.appendChild(card);
+  });
+</script>
+
+<script>
+  // ── EDIT PLAYER OF THE WEEK HERE ──────────────────────────────────
+  const potw = {
+    name: "Parker G",
+    weekRecord: "0-0 this week",
+    reason: "He made the whole website and it took him a very long time."
+  };
+  // ──────────────────────────────────────────────────────────────────
+
+  document.getElementById("potw-card").innerHTML = `
+    <div class="potw-card">
+      <div class="potw-trophy">🏆</div>
+      <div>
+        <div class="potw-label">Player of the Week</div>
+        <div class="potw-name">${potw.name}</div>
+        <div class="potw-reason">${potw.reason}</div>
+        <span class="potw-record">${potw.weekRecord}</span>
+      </div>
+    </div>
+  `;
+
+  // Auto-calculate all stat boxes
+  const mostWins    = players.reduce((a, b) => a.wins >= b.wins ? a : b);
+  const mostLosses  = players.reduce((a, b) => a.losses >= b.losses ? a : b);
+  const mostPoints  = players.reduce((a, b) => a.points >= b.points ? a : b);
+  const mostPlayed  = players.reduce((a, b) =>
+    (a.wins + a.losses) >= (b.wins + b.losses) ? a : b);
+  const mostPlayedTotal = mostPlayed.wins + mostPlayed.losses;
+
+  const statsData = [
+    { label: "Most Wins",           value: mostWins.wins > 0    ? `${mostWins.name} (${mostWins.wins})`             : "TBD" },
+    { label: "Most Losses",         value: mostLosses.losses > 0 ? `${mostLosses.name} (${mostLosses.losses})`      : "TBD" },
+    { label: "Most Points",         value: mostPoints.points > 0 ? `${mostPoints.name} (${mostPoints.points})`      : "TBD" },
+    { label: "Most Matches Played", value: mostPlayedTotal > 0   ? `${mostPlayed.name} (${mostPlayedTotal})`        : "TBD" },
+  ];
+
+  const grid = document.getElementById("leaders-grid");
+  statsData.forEach(s => {
+    const box = document.createElement("div");
+    box.className = "stat-box";
+    box.innerHTML = `<h3>${s.label}</h3><p>${s.value}</p>`;
+    grid.appendChild(box);
+  });
+</script>
+
+<script>
+  // ── EDIT NEWS HERE ────────────────────────────────────────────────
+  // First item is always the featured story. Rest go in the grid below.
+  const news = [
+    {
+      title: "Week 1 Recap",
+      date: "June 4, 2026",
+      summary: "The WPL starts with a bang as players fight for the top spots.",
+      full: "The Winners Pickleball League (WPL) is brand‑new in Haslet, but it’s already blowing up. With sharp branding, rising young talent, and packed venues at Worthington and Adams Middle School, the league feels bigger than an after‑school hobby — it’s turning into a local event. Early Power Rankings are already stirring things up. Parker G opens at No. 1, Grady B jumps to No. 2, and Ansh J slides to No. 3. Seth C and Larin D hold steady, while Isaac T and Amir A are climbing fast. No matches have been played yet, but the movement alone is creating drama. With growing crowds, a polished look, and a competitive roster, the WPL is quickly becoming one of Fort Worth’s coolest new sports traditions."
+    },
+    {
+      title: "Player to Watch: Grady B",
+      date: "June 4, 2026",
+      summary: "Grady climbs to #2 in the power rankings after an impressive debut.",
+      full: ""
+    },
+    {
+      title: "Interplayer Call Out",
+      date: "June 4, 2026",
+      summary: "Larin D on rumor Isaac T is catching him in rankings, 'Nah, Good joke though'.",
+      full: ""
+    },
+  ];
+  // ──────────────────────────────────────────────────────────────────
+
+  // Build featured card (first item)
+  const featured = news[0];
+  document.getElementById("news-featured").innerHTML = `
+    <div style="background:var(--card); padding:30px; border-radius:18px; border:1px solid var(--line);">
+      <span style="color:var(--accent); font-size:0.85rem;">${featured.date}</span>
+      <h3 style="font-family:'Oswald',sans-serif; font-size:1.8rem; margin:8px 0;">${featured.title}</h3>
+      <p style="color:var(--muted); margin-bottom:12px;">${featured.summary}</p>
+      ${featured.full ? `<p style="color:var(--text); line-height:1.7;">${featured.full}</p>` : ""}
+    </div>
+  `;
+
+  // Build grid cards (remaining items)
+  const newsGrid = document.getElementById("news-grid");
+  news.slice(1).forEach(item => {
+    const card = document.createElement("div");
+    card.style.cssText = "background:var(--card); padding:22px; border-radius:18px; border:1px solid var(--line);";
+    card.innerHTML = `
+      <span style="color:var(--accent); font-size:0.85rem;">${item.date}</span>
+      <h3 style="margin:8px 0 10px;">${item.title}</h3>
+      <p style="color:var(--muted);">${item.summary}</p>
+    `;
+    newsGrid.appendChild(card);
+  });
+</script>
+
+<!-- FOOTER -->
+<footer>
+© 2026 WPL • Winners Pickleball League
+</footer>
+
+
+
+<script>
+  function toggleMenu() {
+    document.getElementById("nav-menu").classList.toggle("open");
+  }
+</script>
+
+</body>
+</html>
