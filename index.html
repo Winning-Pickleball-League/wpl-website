@@ -72,6 +72,19 @@ nav a:hover{
     color:var(--accent);
 }
 
+/* SCROLL INDICATOR */
+#scroll-progress{
+    position:fixed;
+    top:0;
+    left:0;
+    height:3px;
+    width:0%;
+    background:var(--accent);
+    z-index:9999;
+    transition:width 0.1s linear;
+    box-shadow:0 0 8px rgba(210,180,140,0.6);
+}
+
 /* HERO */
 .hero{
     min-height:70vh;
@@ -688,6 +701,8 @@ nav ul li a{
 
 <body>
 
+<div id="scroll-progress"></div>
+
 <!-- NAV -->
 <nav>
 <div class="logo">WPL</div>
@@ -752,6 +767,7 @@ nav ul li a{
 <div class="rank-item"><span>#9 Amir A</span><span style="color:red">▼1</span></div>
 <div class="rank-item"><span>#10 Hunter P</span><span style="color:red">▼1</span></div>
 <div class="rank-item"><span>#11 Zaeem N</span><span style="color:red">▼4</span></div>
+<div class="rank-item"><span>#12 Monson K</span><span>NEW (DNP)</span></div>
 </details>
 </div>
 </section>
@@ -812,17 +828,18 @@ nav ul li a{
   // streak: '🔥 W3' for win streak, '🧊 L2' for loss streak, '—' for none
   // ranking: power ranking number
   const players = [
-    { name: "Parker G",  wins: 0, losses: 0, streak: "—",  ranking: 2  },
-    { name: "Grady B",   wins: 0, losses: 0, streak: "—",  ranking: 3  },
-    { name: "Ansh J",    wins: 1, losses: 0, streak: "W1", ranking: 1  },
+    { name: "Parker G",  wins: 0, losses: 0, streak: "—",  ranking: 1  },
+    { name: "Grady B",   wins: 0, losses: 0, streak: "—",  ranking: 2  },
+    { name: "Ansh J",    wins: 1, losses: 0, streak: "W1", ranking: 3  },
     { name: "Seth C",    wins: 0, losses: 0, streak: "—",  ranking: 4  },
     { name: "Larin D",   wins: 0, losses: 0, streak: "—",  ranking: 5  },
-    { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 6  },
-    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 7  },
-    { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 8  },
-    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—",  ranking: 9  },
+    { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 8  },
+    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 9  },
+    { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 7  },
+    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—",  ranking: 11  },
     { name: "Hunter P",  wins: 0, losses: 0, streak: "—",  ranking: 10 },
-    { name: "Anthony A", wins: 0, losses: 1, streak: "L1", ranking: 11 },
+    { name: "Anthony A", wins: 0, losses: 1, streak: "L1", ranking: 6 },
+    { name: "Monson K",  wins: 0, losses: 0, streak: "—",  ranking: 12 },
   ];
 
   // ── EDIT MATCH HISTORY HERE ───────────────────────────────────────
@@ -855,7 +872,7 @@ nav ul li a{
     const total = p.wins + p.losses;
     p.pct = total > 0 ? p.wins / total : 0;
   });
-  players.sort((a, b) => b.pct - a.pct || b.wins - a.wins);
+  players.sort((a, b) => b.pct - a.pct || b.wins - a.wins || a.losses - b.losses);
 
   // Build standings table
   const tbody = document.getElementById("standings-body");
@@ -1116,6 +1133,14 @@ nav ul li a{
   }, { threshold: 0.2 });
 
   document.querySelectorAll(".stats-grid, .players, .modal-stats").forEach(el => countObserver.observe(el));
+
+  // ── SCROLL PROGRESS BAR ───────────────────────────────────────────
+  window.addEventListener("scroll", () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById("scroll-progress").style.width = pct + "%";
+  });
 </script>
 
 </body>
