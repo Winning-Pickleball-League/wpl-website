@@ -305,6 +305,150 @@ summary{
 }
 }
 
+/* PLAYER PROFILE MODAL */
+.modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    z-index:2000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-overlay.open{
+    display:flex;
+}
+
+.modal{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:30px;
+    width:100%;
+    max-width:480px;
+    position:relative;
+    max-height:85vh;
+    overflow-y:auto;
+}
+
+.modal-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:1.4rem;
+    cursor:pointer;
+    line-height:1;
+}
+
+.modal-close:hover{
+    color:var(--text);
+}
+
+.modal-avatar{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:var(--accent);
+    margin:0 auto 12px;
+}
+
+.modal-name{
+    font-family:'Oswald',sans-serif;
+    font-size:1.8rem;
+    text-align:center;
+    margin-bottom:4px;
+}
+
+.modal-ranking{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.85rem;
+    margin-bottom:20px;
+}
+
+.modal-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:24px;
+}
+
+.modal-stat{
+    background:var(--bg);
+    border-radius:12px;
+    padding:12px 6px;
+    text-align:center;
+}
+
+.modal-stat span:first-child{
+    display:block;
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--accent);
+}
+
+.modal-stat span:last-child{
+    display:block;
+    font-size:0.7rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-top:3px;
+}
+
+.modal-section-title{
+    font-size:0.8rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--muted);
+    margin-bottom:10px;
+}
+
+.modal-match{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:0.9rem;
+}
+
+.modal-match-result{
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:0.8rem;
+}
+
+.modal-match-result.win{
+    background:rgba(0,200,100,0.15);
+    color:#00c864;
+}
+
+.modal-match-result.loss{
+    background:rgba(255,80,80,0.15);
+    color:#ff5050;
+}
+
+.modal-match-result.friendly{
+    background:rgba(180,180,180,0.1);
+    color:var(--muted);
+}
+
+.player-card{
+    cursor:pointer;
+    transition:border-color 0.2s;
+}
+
+.player-card:hover{
+    border-color:var(--accent);
+}
+
 /* STATS */
 .stats-grid{
     display:grid;
@@ -499,16 +643,23 @@ nav ul li a{
 <div class="stats-grid" id="leaders-grid">
 </div>
 </section>
+<!-- MATCH RESULTS -->
 <section id="matches">
 <h2 class="section-title">Match Results</h2>
-
 <div class="card">
-<div class="match"><span>Ansh J</span><span>15-9 vs Anthony A</span></div>
-<div class="match"><span>(FRIENDLY) Ansh J</span><span>5-1 vs Anthony A</span></div>
-<div class="match"><span>(FRIENDLY) Parker G</span><span>5-2 vs Ansh J</span></div>
-<div class="match"><span>Zaeem N</span><span>0-0 vs Isaac T</span></div>
+<div class="match"><span class="match-winner">Ansh J</span><span class="match-score">15 — 9</span><span class="match-loser">Anthony A</span></div>
+<div class="match"><span class="match-winner">(FRIENDLY) Ansh J</span><span class="match-score">5 — 1</span><span class="match-loser">Anthony A</span></div>
+<div class="match"><span class="match-winner">(FRIENDLY) Parker G</span><span class="match-score">5 — 2</span><span class="match-loser">Ansh J</span></div>
 </div>
 </section>
+
+<!-- PLAYER PROFILE MODAL -->
+<div class="modal-overlay" id="player-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
 
 <!-- NEWS -->
 <section id="news">
@@ -569,38 +720,70 @@ nav ul li a{
     tbody.appendChild(tr);
   });
 
-  // Build player cards
+  // ── EDIT MATCH HISTORY HERE ───────────────────────────────────────
+  // type: 'win', 'loss', or 'friendly'
+  const matchHistory = [
+    { player: "Ansh J",    type: "win",      opponent: "Anthony A", score: "15-9",  date: "June 4, 2026" },
+    { player: "Anthony A", type: "loss",     opponent: "Ansh J",    score: "9-15",  date: "June 4, 2026" },
+    { player: "Ansh J",    type: "friendly", opponent: "Anthony A", score: "5-1",   date: "June 4, 2026" },
+    { player: "Anthony A", type: "friendly", opponent: "Ansh J",    score: "1-5",   date: "June 4, 2026" },
+    { player: "Parker G",  type: "friendly", opponent: "Ansh J",    score: "5-2",   date: "June 4, 2026" },
+    { player: "Ansh J",    type: "friendly", opponent: "Parker G",  score: "2-5",   date: "June 4, 2026" },
+  ];
+  // ──────────────────────────────────────────────────────────────────
+
+  // Build player cards with click to open modal
   const playersGrid = document.getElementById("players-grid");
   players.forEach(p => {
     const total = p.wins + p.losses;
     const pctDisplay = total > 0 ? Math.round(p.pct * 100) + "%" : "0%";
     const card = document.createElement("div");
     card.className = "player-card";
+    card.onclick = () => openModal(p, pctDisplay);
     card.innerHTML = `
       <div class="avatar"></div>
       <h3>${p.name}</h3>
       <div class="player-ranking">Ranked #${p.ranking}</div>
       <div class="player-stats">
-        <div class="player-stat">
-          <span>${p.wins}</span>
-          <span>Wins</span>
-        </div>
-        <div class="player-stat">
-          <span>${p.losses}</span>
-          <span>Losses</span>
-        </div>
-        <div class="player-stat">
-          <span>${pctDisplay}</span>
-          <span>Win %</span>
-        </div>
-        <div class="player-stat">
-          <span>${p.points}</span>
-          <span>Points</span>
-        </div>
+        <div class="player-stat"><span>${p.wins}</span><span>Wins</span></div>
+        <div class="player-stat"><span>${p.losses}</span><span>Losses</span></div>
+        <div class="player-stat"><span>${pctDisplay}</span><span>Win %</span></div>
+        <div class="player-stat"><span>${p.points}</span><span>Points</span></div>
       </div>
     `;
     playersGrid.appendChild(card);
   });
+
+  function openModal(p, pctDisplay) {
+    const history = matchHistory.filter(m => m.player === p.name);
+    const historyHTML = history.length > 0
+      ? history.map(m => `
+          <div class="modal-match">
+            <span style="color:var(--muted); font-size:0.8rem;">${m.date}</span>
+            <span>vs ${m.opponent} <span style="color:var(--muted)">${m.score}</span></span>
+            <span class="modal-match-result ${m.type}">${m.type === 'friendly' ? 'Friendly' : m.type === 'win' ? 'W' : 'L'}</span>
+          </div>`).join("")
+      : `<p style="color:var(--muted); font-size:0.9rem;">No matches played yet.</p>`;
+
+    document.getElementById("modal-content").innerHTML = `
+      <div class="modal-avatar"></div>
+      <div class="modal-name">${p.name}</div>
+      <div class="modal-ranking">Power Ranking #${p.ranking} &nbsp;•&nbsp; Streak: ${p.streak}</div>
+      <div class="modal-stats">
+        <div class="modal-stat"><span>${p.wins}</span><span>Wins</span></div>
+        <div class="modal-stat"><span>${p.losses}</span><span>Losses</span></div>
+        <div class="modal-stat"><span>${pctDisplay}</span><span>Win %</span></div>
+        <div class="modal-stat"><span>${p.points}</span><span>Points</span></div>
+      </div>
+      <div class="modal-section-title">Match History</div>
+      ${historyHTML}
+    `;
+    document.getElementById("player-modal").classList.add("open");
+  }
+
+  function closeModal() {
+    document.getElementById("player-modal").classList.remove("open");
+  }
 </script>
 
 <script>
