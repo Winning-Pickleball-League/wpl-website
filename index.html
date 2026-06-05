@@ -358,6 +358,75 @@ summary{
 }
 }
 
+/* ── ANIMATIONS ─────────────────────────────── */
+
+/* Fade + slide up on scroll */
+.fade-in{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.55s ease, transform 0.55s ease;
+}
+.fade-in.visible{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* Hover lift on cards */
+.player-card, .stat-box, .news-card, .card{
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+.player-card:hover, .stat-box:hover{
+    transform:translateY(-4px);
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+
+/* Gold shimmer on #1 standings row */
+@keyframes shimmer{
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+}
+.row-gold{
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,215,0,0.08) 40%,
+        rgba(255,215,0,0.18) 50%,
+        rgba(255,215,0,0.08) 60%,
+        transparent 100%
+    );
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+    border-left: 4px solid gold !important;
+}
+
+/* POTW glow border */
+@keyframes glow{
+    0%,100% { box-shadow: 0 0 8px rgba(210,180,140,0.3),  0 0 20px rgba(210,180,140,0.1); }
+    50%      { box-shadow: 0 0 16px rgba(210,180,140,0.6), 0 0 40px rgba(210,180,140,0.2); }
+}
+.potw-card{
+    animation: glow 2.5s ease-in-out infinite;
+}
+
+/* Modal slides up */
+.modal-overlay.open{
+    display:flex;
+    animation: fadeOverlay 0.25s ease;
+}
+.modal-overlay.open .modal{
+    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes fadeOverlay{
+    from{ opacity:0; }
+    to  { opacity:1; }
+}
+@keyframes slideUp{
+    from{ transform:translateY(40px); opacity:0; }
+    to  { transform:translateY(0);    opacity:1; }
+}
+
+/* ─────────────────────────────────────────── */
+
 /* PLAYER PROFILE MODAL */
 .modal-overlay{
     display:none;
@@ -799,7 +868,8 @@ nav ul li a{
     else if (rank === 3) borderStyle = "border-left:4px solid #cd7f32;";
 
     const tr = document.createElement("tr");
-    if (borderStyle) tr.style.cssText = borderStyle;
+    if (rank === 1) tr.className = "row-gold";
+    else if (borderStyle) tr.style.cssText = borderStyle;
     tr.innerHTML = `
       <td>${rank}</td>
       <td>${p.name}</td>
@@ -997,6 +1067,53 @@ nav ul li a{
   function toggleMenu() {
     document.getElementById("nav-menu").classList.toggle("open");
   }
+
+  // ── FADE IN ON SCROLL ─────────────────────────────────────────────
+  const fadeEls = document.querySelectorAll("section, .card, .player-card, .stat-box, .news-card, .potw-card, .rank-item");
+  fadeEls.forEach(el => el.classList.add("fade-in"));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  fadeEls.forEach(el => observer.observe(el));
+
+  // ── NUMBER COUNTER ────────────────────────────────────────────────
+  function animateCount(el, target, duration = 800) {
+    const isPercent = String(target).includes("%");
+    const num = parseInt(target);
+    if (isNaN(num) || num === 0) return;
+    let start = null;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * num) + (isPercent ? "%" : "");
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    };
+    requestAnimationFrame(step);
+  }
+
+  const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        // Stat boxes
+        e.target.querySelectorAll(".stat-box p, .modal-stat span:first-child, .player-stat span:first-child").forEach(el => {
+          const val = el.textContent.trim();
+          if (/^\d+%?$/.test(val)) animateCount(el, val);
+        });
+        countObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll(".stats-grid, .players, .modal-stats").forEach(el => countObserver.observe(el));
 </script>
 
 </body>
