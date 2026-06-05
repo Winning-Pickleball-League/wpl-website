@@ -162,11 +162,57 @@ th{color:var(--accent);}
 tr{border-bottom:1px solid var(--line);}
 
 /* MATCHES */
+.match-group{
+    border-bottom:1px solid var(--line);
+    padding:10px 0;
+    text-align:center;
+}
+
+.match-group:last-child{
+    border-bottom:none;
+}
+
+.friendly-tag{
+    display:inline-block;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--muted);
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:2px 10px;
+    margin-bottom:6px;
+}
+
 .match{
     display:flex;
-    justify-content:space-between;
-    padding:12px 0;
-    border-bottom:1px solid var(--line);
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+}
+
+.match-winner{
+    font-weight:700;
+    color:var(--accent);
+    width:140px;
+    text-align:right;
+}
+
+.match-score{
+    font-size:0.9rem;
+    color:var(--muted);
+    text-align:center;
+    flex-shrink:0;
+    padding:4px 12px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    width:90px;
+}
+
+.match-loser{
+    width:140px;
+    text-align:left;
     color:var(--muted);
 }
 
@@ -647,9 +693,17 @@ nav ul li a{
 <section id="matches">
 <h2 class="section-title">Match Results</h2>
 <div class="card">
-<div class="match"><span class="match-winner">Ansh J</span><span class="match-score">15 — 9</span><span class="match-loser">Anthony A</span></div>
-<div class="match"><span class="match-winner">(FRIENDLY) Ansh J</span><span class="match-score">5 — 1</span><span class="match-loser">Anthony A</span></div>
-<div class="match"><span class="match-winner">(FRIENDLY) Parker G</span><span class="match-score">5 — 2</span><span class="match-loser">Ansh J</span></div>
+<div class="match-group">
+  <div class="match"><span class="match-winner">Ansh J</span><span class="match-score">15 — 9</span><span class="match-loser">Anthony A</span></div>
+</div>
+<div class="match-group">
+  <div class="friendly-tag">Friendly</div>
+  <div class="match"><span class="match-winner">Ansh J</span><span class="match-score">5 — 1</span><span class="match-loser">Anthony A</span></div>
+</div>
+<div class="match-group">
+  <div class="friendly-tag">Friendly</div>
+  <div class="match"><span class="match-winner">Parker G</span><span class="match-score">5 — 2</span><span class="match-loser">Ansh J</span></div>
+</div>
 </div>
 </section>
 
