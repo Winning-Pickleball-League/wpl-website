@@ -259,6 +259,13 @@ summary{
     border-radius:50%;
     background:var(--accent);
     margin:0 auto 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Oswald',sans-serif;
+    font-size:1.3rem;
+    font-weight:700;
+    color:#000;
 }
 
 .player-stats{
@@ -401,6 +408,13 @@ summary{
     border-radius:50%;
     background:var(--accent);
     margin:0 auto 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Oswald',sans-serif;
+    font-size:1.4rem;
+    font-weight:700;
+    color:#000;
 }
 
 .modal-name{
@@ -724,23 +738,46 @@ nav ul li a{
 
 <script>
   // ── EDIT PLAYER DATA HERE ─────────────────────────────────────────
-  // Update wins, losses, streak, ranking, and points after each week.
-  // points: total points scored across all matches
+  // Points are AUTO-CALCULATED from match history — no need to enter them!
   // streak: '🔥 W3' for win streak, '🧊 L2' for loss streak, '—' for none
   // ranking: power ranking number
   const players = [
-    { name: "Parker G",  wins: 0, losses: 0, streak: "—", ranking: 2,  points: 0  },
-    { name: "Grady B",   wins: 0, losses: 0, streak: "—", ranking: 3,  points: 0  },
-    { name: "Ansh J",    wins: 1, losses: 0, streak: "—", ranking: 1,  points: 15 },
-    { name: "Seth C",    wins: 0, losses: 0, streak: "—", ranking: 4,  points: 0  },
-    { name: "Larin D",   wins: 0, losses: 0, streak: "—", ranking: 5,  points: 0  },
-    { name: "Isaac T",   wins: 0, losses: 0, streak: "—", ranking: 6,  points: 0  },
-    { name: "Amir A",    wins: 0, losses: 0, streak: "—", ranking: 7,  points: 0  },
-    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—", ranking: 8,  points: 0  },
-    { name: "Hunter P",  wins: 0, losses: 0, streak: "—", ranking: 9,  points: 0  },
-    { name: "Anthony A", wins: 0, losses: 1, streak: "—", ranking: 10, points: 9  },
+    { name: "Parker G",  wins: 0, losses: 0, streak: "—", ranking: 2  },
+    { name: "Grady B",   wins: 0, losses: 0, streak: "—", ranking: 3  },
+    { name: "Ansh J",    wins: 1, losses: 0, streak: "—", ranking: 1  },
+    { name: "Seth C",    wins: 0, losses: 0, streak: "—", ranking: 4  },
+    { name: "Larin D",   wins: 0, losses: 0, streak: "—", ranking: 5  },
+    { name: "Isaac T",   wins: 0, losses: 0, streak: "—", ranking: 6  },
+    { name: "Amir A",    wins: 0, losses: 0, streak: "—", ranking: 7  },
+    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—", ranking: 8  },
+    { name: "Hunter P",  wins: 0, losses: 0, streak: "—", ranking: 9  },
+    { name: "Anthony A", wins: 0, losses: 1, streak: "—", ranking: 10 },
+  ];
+
+  // ── EDIT MATCH HISTORY HERE ───────────────────────────────────────
+  // type: 'win', 'loss', or 'friendly'
+  // myScore: points this player scored. oppScore: points opponent scored.
+  const matchHistory = [
+    { player: "Ansh J",    type: "win",      opponent: "Anthony A", myScore: 15, oppScore: 9,  date: "June 4, 2026" },
+    { player: "Anthony A", type: "loss",     opponent: "Ansh J",    myScore: 9,  oppScore: 15, date: "June 4, 2026" },
+    { player: "Ansh J",    type: "friendly", opponent: "Anthony A", myScore: 5,  oppScore: 1,  date: "June 4, 2026" },
+    { player: "Anthony A", type: "friendly", opponent: "Ansh J",    myScore: 1,  oppScore: 5,  date: "June 4, 2026" },
+    { player: "Parker G",  type: "friendly", opponent: "Ansh J",    myScore: 5,  oppScore: 2,  date: "June 4, 2026" },
+    { player: "Ansh J",    type: "friendly", opponent: "Parker G",  myScore: 2,  oppScore: 5,  date: "June 4, 2026" },
   ];
   // ──────────────────────────────────────────────────────────────────
+
+  // Helper: get initials
+  function getInitials(name) {
+    return name.split(" ").map(w => w[0]).join("").toUpperCase();
+  }
+
+  // Auto-calculate points from official matches only (no friendlies)
+  players.forEach(p => {
+    p.points = matchHistory
+      .filter(m => m.player === p.name && m.type !== "friendly")
+      .reduce((sum, m) => sum + m.myScore, 0);
+  });
 
   // Calculate win % and sort
   players.forEach(p => {
@@ -774,19 +811,7 @@ nav ul li a{
     tbody.appendChild(tr);
   });
 
-  // ── EDIT MATCH HISTORY HERE ───────────────────────────────────────
-  // type: 'win', 'loss', or 'friendly'
-  const matchHistory = [
-    { player: "Ansh J",    type: "win",      opponent: "Anthony A", score: "15-9",  date: "June 4, 2026" },
-    { player: "Anthony A", type: "loss",     opponent: "Ansh J",    score: "9-15",  date: "June 4, 2026" },
-    { player: "Ansh J",    type: "friendly", opponent: "Anthony A", score: "5-1",   date: "June 4, 2026" },
-    { player: "Anthony A", type: "friendly", opponent: "Ansh J",    score: "1-5",   date: "June 4, 2026" },
-    { player: "Parker G",  type: "friendly", opponent: "Ansh J",    score: "5-2",   date: "June 4, 2026" },
-    { player: "Ansh J",    type: "friendly", opponent: "Parker G",  score: "2-5",   date: "June 4, 2026" },
-  ];
-  // ──────────────────────────────────────────────────────────────────
-
-  // Build player cards with click to open modal
+  // Build player cards
   const playersGrid = document.getElementById("players-grid");
   players.forEach(p => {
     const total = p.wins + p.losses;
@@ -795,7 +820,7 @@ nav ul li a{
     card.className = "player-card";
     card.onclick = () => openModal(p, pctDisplay);
     card.innerHTML = `
-      <div class="avatar"></div>
+      <div class="avatar">${getInitials(p.name)}</div>
       <h3>${p.name}</h3>
       <div class="player-ranking">Ranked #${p.ranking}</div>
       <div class="player-stats">
@@ -810,17 +835,41 @@ nav ul li a{
 
   function openModal(p, pctDisplay) {
     const history = matchHistory.filter(m => m.player === p.name);
+
+    // Build head-to-head records
+    const h2h = {};
+    history.forEach(m => {
+      if (!h2h[m.opponent]) h2h[m.opponent] = { wins: 0, losses: 0 };
+      if (m.type === "win")  h2h[m.opponent].wins++;
+      if (m.type === "loss") h2h[m.opponent].losses++;
+    });
+    const h2hEntries = Object.entries(h2h);
+    const h2hHTML = h2hEntries.length > 0
+      ? h2hEntries.map(([opp, rec]) => {
+          const total = rec.wins + rec.losses;
+          const pct = total > 0 ? Math.round((rec.wins / total) * 100) : 0;
+          const color = rec.wins > rec.losses ? "#00c864" : rec.losses > rec.wins ? "#ff5050" : "var(--muted)";
+          return `
+            <div class="modal-match">
+              <span style="font-weight:600;">${opp}</span>
+              <span style="color:${color}; font-weight:700;">${rec.wins}-${rec.losses}</span>
+              <span style="color:var(--muted); font-size:0.8rem;">${pct}% win rate</span>
+            </div>`;
+        }).join("")
+      : `<p style="color:var(--muted); font-size:0.9rem;">No official matches yet.</p>`;
+
+    // Build match history
     const historyHTML = history.length > 0
       ? history.map(m => `
           <div class="modal-match">
             <span style="color:var(--muted); font-size:0.8rem;">${m.date}</span>
-            <span>vs ${m.opponent} <span style="color:var(--muted)">${m.score}</span></span>
+            <span>vs ${m.opponent} <span style="color:var(--muted)">${m.myScore}-${m.oppScore}</span></span>
             <span class="modal-match-result ${m.type}">${m.type === 'friendly' ? 'Friendly' : m.type === 'win' ? 'W' : 'L'}</span>
           </div>`).join("")
       : `<p style="color:var(--muted); font-size:0.9rem;">No matches played yet.</p>`;
 
     document.getElementById("modal-content").innerHTML = `
-      <div class="modal-avatar"></div>
+      <div class="modal-avatar">${getInitials(p.name)}</div>
       <div class="modal-name">${p.name}</div>
       <div class="modal-ranking">Power Ranking #${p.ranking} &nbsp;•&nbsp; Streak: ${p.streak}</div>
       <div class="modal-stats">
@@ -829,7 +878,9 @@ nav ul li a{
         <div class="modal-stat"><span>${pctDisplay}</span><span>Win %</span></div>
         <div class="modal-stat"><span>${p.points}</span><span>Points</span></div>
       </div>
-      <div class="modal-section-title">Match History</div>
+      <div class="modal-section-title">Head to Head</div>
+      ${h2hHTML}
+      <div class="modal-section-title" style="margin-top:18px;">Match History</div>
       ${historyHTML}
     `;
     document.getElementById("player-modal").classList.add("open");
