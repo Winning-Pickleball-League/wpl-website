@@ -623,6 +623,199 @@ summary{
     border:1px solid var(--line);
 }
 
+/* MATCH QUALITY SCORE — EMBEDDED DISPLAY */
+.mqs-embed{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.mqs-embed-score{
+    font-family:'Oswald',sans-serif;
+    font-size:1.05rem;
+    color:var(--accent);
+}
+
+.mqs-embed-badge{
+    font-size:0.75rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:999px;
+    border:1px solid currentColor;
+}
+
+.mqs-embed-breakdown{
+    width:100%;
+    font-size:0.75rem;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+.mqs-embed-bar-wrap{
+    width:100%;
+    background:rgba(255,255,255,0.06);
+    border-radius:999px;
+    height:4px;
+    margin-top:6px;
+    overflow:hidden;
+}
+
+.mqs-embed-bar-fill{
+    height:100%;
+    border-radius:999px;
+}
+
+/* ADVANCED ANALYTICS — CAROUSEL */
+.carousel{
+    display:flex;
+    gap:14px;
+    overflow-x:auto;
+    padding-bottom:10px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+}
+.carousel::-webkit-scrollbar{ display:none; }
+
+/* ANALYTICS CARDS — shared base */
+.wp-card{
+    flex:0 0 280px;
+    scroll-snap-align:start;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-height:260px;
+}
+
+.wp-card-title{
+    font-family:'Oswald',sans-serif;
+    font-size:1.1rem;
+    color:var(--accent);
+    letter-spacing:0.5px;
+}
+
+/* DROPDOWNS */
+.wp-selects{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.wp-select{
+    flex:1;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:0.85rem;
+    padding:8px 10px;
+    outline:none;
+    cursor:pointer;
+    transition:border-color 0.2s;
+}
+.wp-select:focus{ border-color:var(--accent); }
+.wp-select option{ background:var(--card); }
+
+.wp-vs-label{
+    font-size:0.75rem;
+    color:var(--muted);
+    flex-shrink:0;
+}
+
+/* RESULT AREA */
+.wp-result{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    flex:1;
+}
+
+.wp-result-empty{
+    color:var(--muted);
+    font-size:0.82rem;
+    margin:auto 0;
+    text-align:center;
+}
+
+.wp-matchup-names{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.85rem;
+    font-weight:600;
+}
+
+.wp-name-a{ color:var(--accent); }
+.wp-name-b{ color:var(--muted); }
+
+.wp-bar-wrap{
+    background:rgba(255,255,255,0.06);
+    border-radius:999px;
+    height:8px;
+    overflow:hidden;
+}
+
+.wp-bar-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:999px;
+    transition:width 0.7s cubic-bezier(0.34,1.56,0.64,1);
+    width:0%;
+}
+
+.wp-pcts{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.82rem;
+}
+.wp-pct-a{ color:var(--accent); font-weight:700; }
+.wp-pct-b{ color:var(--muted); }
+
+.wp-confidence{
+    display:inline-block;
+    align-self:flex-start;
+    font-size:0.72rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:999px;
+}
+
+.wp-factors{
+    font-size:0.73rem;
+    color:var(--muted);
+    line-height:1.7;
+    border-top:1px solid var(--line);
+    padding-top:8px;
+}
+.wp-factors span{ display:block; }
+
+/* PLACEHOLDER CARDS */
+.wp-card-placeholder{
+    align-items:center;
+    justify-content:center;
+    opacity:0.4;
+    border-style:dashed;
+}
+.wp-placeholder-icon{ font-size:2rem; }
+.wp-placeholder-label{
+    font-family:'Oswald',sans-serif;
+    font-size:1rem;
+    color:var(--text);
+}
+.wp-placeholder-sub{
+    font-size:0.75rem;
+    color:var(--muted);
+}
+
 /* FOOTER */
 footer{
     text-align:center;
@@ -713,6 +906,7 @@ nav ul li a{
 <li><a href="#players" onclick="toggleMenu()">Players</a></li>
 <li><a href="#stats" onclick="toggleMenu()">Leaders</a></li>
 <li><a href="#matches" onclick="toggleMenu()">Results</a></li>
+<li><a href="#analytics" onclick="toggleMenu()">Analytics</a></li>
 <li><a href="#news" onclick="toggleMenu()">News</a></li>
 </ul>
 </nav>
@@ -789,25 +983,51 @@ nav ul li a{
 <div class="stats-grid" id="leaders-grid">
 </div>
 </section>
+
+<!-- ADVANCED ANALYTICS -->
+<section id="analytics">
+<h2 class="section-title">Advanced Analytics</h2>
+
+<div class="carousel" id="analytics-carousel">
+
+  <!-- WIN PROBABILITY CARD -->
+  <div class="wp-card">
+    <div class="wp-card-title">🎯 Win Probability</div>
+    <div class="wp-selects">
+      <select id="wp-select-a" class="wp-select">
+        <option value="">Select Player</option>
+      </select>
+      <span class="wp-vs-label">vs</span>
+      <select id="wp-select-b" class="wp-select">
+        <option value="">Select Player</option>
+      </select>
+    </div>
+    <div id="wp-result" class="wp-result"></div>
+  </div>
+
+  <!-- PLACEHOLDER CARDS — replace with future stats -->
+  <div class="wp-card wp-card-placeholder">
+    <div class="wp-placeholder-icon">📊</div>
+    <div class="wp-placeholder-label">Coming Soon</div>
+    <div class="wp-placeholder-sub">More stats on the way</div>
+  </div>
+  <div class="wp-card wp-card-placeholder">
+    <div class="wp-placeholder-icon">📈</div>
+    <div class="wp-placeholder-label">Coming Soon</div>
+    <div class="wp-placeholder-sub">More stats on the way</div>
+  </div>
+
+</div>
+
+</section>
+
 <!-- MATCH RESULTS -->
 <section id="matches">
 <h2 class="section-title">Match Results</h2>
-<div class="card">
-<div class="match-group">
-  <div class="match"><span class="match-winner">Ansh J</span><span class="match-score">15 — 9</span><span class="match-loser">Anthony A</span></div>
-</div>
-<div class="match-group">
-  <div class="friendly-tag">Friendly</div>
-  <div class="match"><span class="match-winner">Ansh J</span><span class="match-score">5 — 1</span><span class="match-loser">Anthony A</span></div>
-</div>
-<div class="match-group">
-  <div class="friendly-tag">Friendly</div>
-  <div class="match"><span class="match-winner">Parker G</span><span class="match-score">5 — 2</span><span class="match-loser">Ansh J</span></div>
-</div>
+<div class="card" id="match-results-card">
+<!-- Auto-generated by JS below -->
 </div>
 </section>
-
-<!-- PLAYER PROFILE MODAL -->
 <div class="modal-overlay" id="player-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -825,7 +1045,7 @@ nav ul li a{
 <script>
   // ── EDIT PLAYER DATA HERE ─────────────────────────────────────────
   // Points are AUTO-CALCULATED from match history — no need to enter them!
-  // streak: '🔥 W3' for win streak, '🧊 L2' for loss streak, '—' for none
+  // streak: '🔥 W2' for win streak, '🧊 L2' for loss streak, '—' for none
   // ranking: power ranking number
   const players = [
     { name: "Parker G",  wins: 0, losses: 0, streak: "—",  ranking: 1  },
@@ -1141,7 +1361,168 @@ nav ul li a{
     const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     document.getElementById("scroll-progress").style.width = pct + "%";
   });
+  // ── MATCH QUALITY SCORE — EMBEDDED ───────────────────────────────
+  // Add mqs: { leadChanges, closeness, upsetFactor } to any match to show a quality score.
+  // All three values must be 1–10. Leave mqs out entirely to hide the score.
+  // ─────────────────────────────────────────────────────────────────
+  const matchResults = [
+    {
+      winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
+      mqs: { leadChanges: 7, closeness: 5, upsetFactor: 4 }
+    },
+    {
+      winner: "Ansh J", loser: "Anthony A", score: "5 — 1", type: "friendly",
+      mqs: { leadChanges: 1, closeness: 3, upsetFactor: 2 }
+    },
+    {
+      winner: "Parker G", loser: "Ansh J", score: "5 — 2", type: "friendly",
+      mqs: { leadChanges: 4, closeness: 4, upsetFactor: 3 }
+    },
+  ];
+  // ──────────────────────────────────────────────────────────────────
+
+  function mqsTier(score) {
+    if (score >= 8.5) return { label: "🔥 Instant Classic", color: "gold"           };
+    if (score >= 7)   return { label: "⚡ Great Match",      color: "#00c864"        };
+    if (score >= 5)   return { label: "👍 Solid Match",      color: "var(--accent)"  };
+    if (score >= 3)   return { label: "😐 Average",          color: "var(--muted)"   };
+                      return { label: "💤 Low Intensity",    color: "#ff5050"        };
+  }
+
+  const matchCard = document.getElementById("match-results-card");
+  // ── ADVANCED ANALYTICS: WIN PROBABILITY (DROPDOWN) ───────────────
+  function calcWinProb(nameA, nameB) {
+    const pA = players.find(p => p.name === nameA);
+    const pB = players.find(p => p.name === nameB);
+    if (!pA || !pB) return null;
+
+    const wrA = (pA.wins + pA.losses) > 0 ? pA.wins / (pA.wins + pA.losses) : 0.5;
+    const wrB = (pB.wins + pB.losses) > 0 ? pB.wins / (pB.wins + pB.losses) : 0.5;
+
+    const h2hA = matchHistory.filter(m => m.player === nameA && m.opponent === nameB && m.type === "win").length;
+    const h2hB = matchHistory.filter(m => m.player === nameB && m.opponent === nameA && m.type === "win").length;
+    const h2hTotal = h2hA + h2hB;
+    const h2hRateA = h2hTotal > 0 ? h2hA / h2hTotal : 0.5;
+
+    function streakVal(streak) {
+      const m = streak.match(/([WL])(\d+)/);
+      if (!m) return 0;
+      const mag = Math.min(parseInt(m[2]), 4) * 0.05;
+      return m[1] === "W" ? mag : -mag;
+    }
+    const momA = streakVal(pA.streak);
+    const momB = streakVal(pB.streak);
+    const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.08;
+
+    let rawA = (wrA * 0.20) + (h2hRateA * 0.30) + ((0.5 + momA - momB) * 0.20) + ((0.5 + rankEdgeA) * 0.30);
+    rawA = Math.max(0.05, Math.min(0.95, rawA));
+    const probA = Math.round(rawA * 100);
+    const probB = 100 - probA;
+
+    return {
+      probA, probB,
+      factors: [
+        `Overall record: ${pA.wins}-${pA.losses} vs ${pB.wins}-${pB.losses}`,
+        h2hTotal > 0 ? `Head-to-head: ${nameA.split(" ")[0]} ${h2hA}-${h2hB} ${nameB.split(" ")[0]}` : `Head-to-head: No official matches`,
+        `Streak: ${pA.streak || "—"} vs ${pB.streak || "—"}`,
+        `Power ranking: #${pA.ranking} vs #${pB.ranking}`,
+      ]
+    };
+  }
+
+  function wpConfidence(diff) {
+    if (diff >= 30) return { label: "Strong Favorite", color: "var(--accent)" };
+    if (diff >= 15) return { label: "Likely",          color: "#00c864"       };
+    if (diff >= 5)  return { label: "Slight Edge",     color: "#6ec6ff"       };
+                    return { label: "Coin Flip",       color: "var(--muted)"  };
+  }
+
+  // Populate dropdowns
+  const selA = document.getElementById("wp-select-a");
+  const selB = document.getElementById("wp-select-b");
+  players.forEach(p => {
+    selA.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+    selB.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+  });
+
+  function renderWP() {
+    const a = selA.value;
+    const b = selB.value;
+    const result = document.getElementById("wp-result");
+
+    if (!a || !b || a === b) {
+      result.innerHTML = `<div class="wp-result-empty">Select two different players to see win probability.</div>`;
+      return;
+    }
+
+    const data = calcWinProb(a, b);
+    if (!data) return;
+    const { probA, probB, factors } = data;
+    const conf = wpConfidence(Math.abs(probA - probB));
+
+    result.innerHTML = `
+      <div class="wp-matchup-names">
+        <span class="wp-name-a">${a}</span>
+        <span class="wp-name-b">${b}</span>
+      </div>
+      <div class="wp-bar-wrap"><div class="wp-bar-fill" id="wp-bar" style="width:0%"></div></div>
+      <div class="wp-pcts">
+        <span class="wp-pct-a">${probA}%</span>
+        <span class="wp-pct-b">${probB}%</span>
+      </div>
+      <span class="wp-confidence" style="background:${conf.color}22; color:${conf.color}; border:1px solid ${conf.color}55;">${conf.label}</span>
+      <div class="wp-factors">${factors.map(f => `<span>· ${f}</span>`).join("")}</div>
+    `;
+    setTimeout(() => {
+      const bar = document.getElementById("wp-bar");
+      if (bar) bar.style.width = probA + "%";
+    }, 50);
+  }
+
+  selA.addEventListener("change", renderWP);
+  selB.addEventListener("change", renderWP);
+  renderWP();
 </script>
 
-</body>
+<script>
+  matchResults.forEach(m => {
+    const isOfficial = m.type === "official";
+    let mqsHTML = "";
+
+    if (m.mqs) {
+      const { leadChanges, closeness, upsetFactor } = m.mqs;
+      const avg   = (leadChanges + closeness + upsetFactor) / 3;
+      const score = Math.round(avg * 10) / 10;
+      const tier  = mqsTier(score);
+      const pct   = (score / 10 * 100).toFixed(1);
+
+      mqsHTML = `
+        <div class="mqs-embed">
+          <span class="mqs-embed-score">⚡ MQS: ${score}/10</span>
+          <span class="mqs-embed-badge" style="color:${tier.color}; border-color:${tier.color};">${tier.label}</span>
+          <div class="mqs-embed-breakdown">
+            Lead Changes: <b>${leadChanges}</b> &nbsp;·&nbsp;
+            Closeness: <b>${closeness}</b> &nbsp;·&nbsp;
+            Upset Factor: <b>${upsetFactor}</b>
+          </div>
+          <div class="mqs-embed-bar-wrap">
+            <div class="mqs-embed-bar-fill" style="width:${pct}%; background:${tier.color};"></div>
+          </div>
+        </div>`;
+    }
+
+    const group = document.createElement("div");
+    group.className = "match-group";
+    group.innerHTML = `
+      ${!isOfficial ? `<div class="friendly-tag">${m.type.charAt(0).toUpperCase() + m.type.slice(1)}</div>` : ""}
+      <div class="match">
+        <span class="match-winner">${m.winner}</span>
+        <span class="match-score">${m.score}</span>
+        <span class="match-loser">${m.loser}</span>
+      </div>
+      ${mqsHTML}
+    `;
+    matchCard.appendChild(group);
+  });
+</script>
 </html>
