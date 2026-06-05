@@ -816,6 +816,117 @@ summary{
     color:var(--muted);
 }
 
+/* PLAYER ADVANCED STATS */
+.ps-stat-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+    gap:10px;
+}
+.ps-stat-row:last-child{ border-bottom:none; }
+
+.ps-stat-label{
+    font-size:0.75rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    flex:1;
+    line-height:1.4;
+}
+
+.ps-stat-right{
+    text-align:right;
+    flex-shrink:0;
+}
+
+.ps-stat-value{
+    font-family:'Oswald',sans-serif;
+    font-size:1.1rem;
+    color:var(--accent);
+    font-weight:700;
+    display:block;
+}
+
+.ps-stat-note{
+    font-size:0.68rem;
+    color:var(--muted);
+    display:block;
+    margin-top:1px;
+}
+
+.ps-grade{
+    display:inline-block;
+    font-size:0.7rem;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    margin-top:3px;
+}
+
+/* FRAUD WATCH */
+.fw-suspect{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+}
+.fw-suspect:last-child{ border-bottom:none; }
+
+.fw-rank{
+    font-family:'Oswald',sans-serif;
+    font-size:1.4rem;
+    font-weight:700;
+    width:28px;
+    flex-shrink:0;
+    text-align:center;
+}
+
+.fw-info{ flex:1; min-width:0; }
+
+.fw-name{
+    font-size:0.9rem;
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.fw-reason{
+    font-size:0.72rem;
+    color:var(--muted);
+    margin-top:2px;
+    line-height:1.4;
+}
+
+.fw-score-wrap{ flex-shrink:0; text-align:right; }
+
+.fw-score{
+    font-family:'Oswald',sans-serif;
+    font-size:1.1rem;
+    font-weight:700;
+}
+
+.fw-label{
+    font-size:0.65rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    display:block;
+}
+
+.fw-header{
+    font-size:0.72rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:8px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+}
+
 /* FOOTER */
 footer{
     text-align:center;
@@ -990,6 +1101,17 @@ nav ul li a{
 
 <div class="carousel" id="analytics-carousel">
 
+  <!-- PLAYER ADVANCED STATS CARD -->
+  <div class="wp-card">
+    <div class="wp-card-title">📊 Player Profile</div>
+    <div class="wp-selects">
+      <select id="ps-select" class="wp-select" style="flex:1;">
+        <option value="">Select Player</option>
+      </select>
+    </div>
+    <div id="ps-result" class="wp-result"></div>
+  </div>
+
   <!-- WIN PROBABILITY CARD -->
   <div class="wp-card">
     <div class="wp-card-title">🎯 Win Probability</div>
@@ -1005,16 +1127,10 @@ nav ul li a{
     <div id="wp-result" class="wp-result"></div>
   </div>
 
-  <!-- PLACEHOLDER CARDS — replace with future stats -->
-  <div class="wp-card wp-card-placeholder">
-    <div class="wp-placeholder-icon">📊</div>
-    <div class="wp-placeholder-label">Coming Soon</div>
-    <div class="wp-placeholder-sub">More stats on the way</div>
-  </div>
-  <div class="wp-card wp-card-placeholder">
-    <div class="wp-placeholder-icon">📈</div>
-    <div class="wp-placeholder-label">Coming Soon</div>
-    <div class="wp-placeholder-sub">More stats on the way</div>
+  <!-- FRAUD WATCH CARD -->
+  <div class="wp-card">
+    <div class="wp-card-title">🚨 Fraud Watch</div>
+    <div id="fw-result" class="wp-result"></div>
   </div>
 
 </div>
@@ -1368,11 +1484,11 @@ nav ul li a{
   const matchResults = [
     {
       winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
-      mqs: { leadChanges: 7, closeness: 6, upsetFactor: 6 }
+      mqs: { leadChanges: 7, closeness: 5, upsetFactor: 4 }
     },
     {
       winner: "Ansh J", loser: "Anthony A", score: "5 — 1", type: "friendly",
-      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 2 }
+      mqs: { leadChanges: 1, closeness: 3, upsetFactor: 2 }
     },
     {
       winner: "Parker G", loser: "Ansh J", score: "5 — 2", type: "friendly",
@@ -1414,7 +1530,7 @@ nav ul li a{
     const momB = streakVal(pB.streak);
     const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.08;
 
-    let rawA = (wrA * 0.20) + (h2hRateA * 0.35) + ((0.5 + momA - momB) * 0.10) + ((0.5 + rankEdgeA) * 0.35);
+    let rawA = (wrA * 0.35) + (h2hRateA * 0.30) + ((0.5 + momA - momB) * 0.20) + ((0.5 + rankEdgeA) * 0.15);
     rawA = Math.max(0.05, Math.min(0.95, rawA));
     const probA = Math.round(rawA * 100);
     const probB = 100 - probA;
@@ -1482,6 +1598,202 @@ nav ul li a{
   selA.addEventListener("change", renderWP);
   selB.addEventListener("change", renderWP);
   renderWP();
+
+  // ── PLAYER ADVANCED STATS ─────────────────────────────────────────
+
+  // Populate player dropdown
+  const selPS = document.getElementById("ps-select");
+  players.forEach(p => {
+    selPS.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+  });
+
+  function calcPlayerStats(name) {
+    const p = players.find(x => x.name === name);
+    if (!p) return null;
+
+    const officialMatches = matchHistory.filter(m => m.player === name && m.type !== "friendly");
+
+    // ── 1. STRENGTH OF SCHEDULE ──────────────────────────────────────
+    // Average power ranking of opponents faced (official only).
+    // Lower avg ranking = tougher schedule. Normalized to 0–100 (100 = hardest).
+    const maxRanking = players.length;
+    let sosScore = null;
+    let sosNote  = "No official matches yet";
+    if (officialMatches.length > 0) {
+      const oppRankings = officialMatches.map(m => {
+        const opp = players.find(x => x.name === m.opponent);
+        return opp ? opp.ranking : maxRanking;
+      });
+      const avgOppRank = oppRankings.reduce((s, r) => s + r, 0) / oppRankings.length;
+      // Invert: rank 1 opponent = hardest. Score 0–100.
+      sosScore = Math.round(((maxRanking - avgOppRank) / (maxRanking - 1)) * 100);
+      sosNote  = `Avg opp ranking: #${avgOppRank.toFixed(1)}`;
+    }
+
+    // ── 2. PLAYER EFFICIENCY SCORE ───────────────────────────────────
+    // Formula: (win% × 40) + (normalized point diff × 35) + (sos × 25)
+    // Point diff: avg points scored minus avg points allowed in official matches.
+    let pesScore = null;
+    let pesNote  = "No official matches yet";
+    if (officialMatches.length > 0) {
+      const winRate = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
+      const avgScored   = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
+      const avgAllowed  = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
+      const pointDiff   = avgScored - avgAllowed;
+      // Normalize point diff to 0–1 (cap at ±15 pts)
+      const normDiff    = Math.max(0, Math.min(1, (pointDiff + 15) / 30));
+      const sosFactor   = sosScore !== null ? sosScore / 100 : 0.5;
+      pesScore = Math.round((winRate * 40) + (normDiff * 35) + (sosFactor * 25));
+      pesNote  = `+${pointDiff.toFixed(1)} pt diff/game`;
+    }
+
+    // ── 3. CLUTCH RATING ─────────────────────────────────────────────
+    // Win% in official games decided by 3 pts or fewer.
+    const clutchMatches = officialMatches.filter(m => Math.abs(m.myScore - m.oppScore) <= 3);
+    let clutchScore = null;
+    let clutchNote  = "No clutch games yet";
+    if (clutchMatches.length > 0) {
+      const clutchWins = clutchMatches.filter(m => m.type === "win").length;
+      clutchScore = Math.round((clutchWins / clutchMatches.length) * 100);
+      clutchNote  = `${clutchWins}W–${clutchMatches.length - clutchWins}L in close games`;
+    }
+
+    return { sosScore, sosNote, pesScore, pesNote, clutchScore, clutchNote };
+  }
+
+  function gradeColor(score, invert = false) {
+    if (score === null) return { label: "N/A", color: "var(--muted)" };
+    const s = invert ? 100 - score : score;
+    if (s >= 75) return { label: "Elite",    color: "gold"        };
+    if (s >= 55) return { label: "Strong",   color: "#00c864"     };
+    if (s >= 40) return { label: "Average",  color: "var(--accent)" };
+    if (s >= 20) return { label: "Below Avg",color: "#6ec6ff"     };
+                 return { label: "Weak",     color: "#ff5050"     };
+  }
+
+  function renderPS() {
+    const name   = selPS.value;
+    const result = document.getElementById("ps-result");
+
+    if (!name) {
+      result.innerHTML = `<div class="wp-result-empty">Select a player to see advanced stats.</div>`;
+      return;
+    }
+
+    const stats = calcPlayerStats(name);
+    if (!stats) return;
+    const { sosScore, sosNote, pesScore, pesNote, clutchScore, clutchNote } = stats;
+
+    const sosGrade    = gradeColor(sosScore);
+    const pesGrade    = gradeColor(pesScore);
+    const clutchGrade = gradeColor(clutchScore);
+
+    function statRow(label, value, note, grade) {
+      const valDisplay = value !== null ? value : "—";
+      return `
+        <div class="ps-stat-row">
+          <span class="ps-stat-label">${label}</span>
+          <div class="ps-stat-right">
+            <span class="ps-stat-value" style="color:${grade.color}">${valDisplay}${value !== null ? "" : ""}</span>
+            <span class="ps-stat-note">${note}</span>
+            ${value !== null ? `<span class="ps-grade" style="background:${grade.color}22; color:${grade.color}; border:1px solid ${grade.color}55;">${grade.label}</span>` : ""}
+          </div>
+        </div>`;
+    }
+
+    result.innerHTML =
+      statRow("Strength of Schedule", sosScore !== null ? sosScore : null, sosNote, sosGrade) +
+      statRow("Player Efficiency", pesScore !== null ? pesScore : null, pesNote, pesGrade) +
+      statRow("Clutch Rating", clutchScore !== null ? clutchScore + "%" : null, clutchNote, clutchGrade);
+  }
+
+  selPS.addEventListener("change", renderPS);
+  renderPS();
+
+  // ── FRAUD WATCH ───────────────────────────────────────────────────
+  // Fraud score = weighted combo of poor point differential + weak SOS.
+  // Only players with at least 1 official match are considered.
+  // Higher fraud score = bigger fraud.
+
+  function calcFraudScore(name) {
+    const p = players.find(x => x.name === name);
+    if (!p) return null;
+
+    const officialMatches = matchHistory.filter(m => m.player === name && m.type !== "friendly");
+    if (officialMatches.length === 0) return null;
+
+    // Point differential per game (negative = giving up more than scoring)
+    const avgScored  = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
+    const avgAllowed = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
+    const pointDiff  = avgScored - avgAllowed;
+
+    // Normalize point diff to fraud contribution: large negative diff = high fraud
+    // Cap at ±15, invert so negative diff = high score (0–100)
+    const diffFraud = Math.round(Math.max(0, Math.min(100, ((-pointDiff + 15) / 30) * 100)));
+
+    // SOS fraud: low SOS (easy schedule) = high fraud contribution
+    const maxRanking = players.length;
+    const oppRankings = officialMatches.map(m => {
+      const opp = players.find(x => x.name === m.opponent);
+      return opp ? opp.ranking : maxRanking;
+    });
+    const avgOppRank = oppRankings.reduce((s, r) => s + r, 0) / oppRankings.length;
+    // High avg opp rank = weak opponents = fraud. Normalize to 0–100.
+    const sosFraud = Math.round(((avgOppRank - 1) / (maxRanking - 1)) * 100);
+
+    // Win rate: high win rate on weak schedule = more suspicious
+    const winRate = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
+
+    // Weighted: point diff 45%, SOS 35%, win rate on easy schedule 20%
+    const fraudScore = Math.round((diffFraud * 0.45) + (sosFraud * 0.35) + (winRate * 20));
+
+    const reasons = [];
+    if (pointDiff < 0)    reasons.push(`${pointDiff.toFixed(1)} pt diff/game`);
+    if (sosFraud > 50)    reasons.push(`Weak SOS (avg opp #${avgOppRank.toFixed(1)})`);
+    if (diffFraud < 40 && winRate > 0.5) reasons.push(`Wins not convincing`);
+    if (reasons.length === 0) reasons.push(`Pt diff: +${pointDiff.toFixed(1)}/game`);
+
+    return { fraudScore, reason: reasons.join(" · "), pointDiff, winRate };
+  }
+
+  function renderFW() {
+    const fwResult = document.getElementById("fw-result");
+
+    const suspects = players
+      .map(p => {
+        const data = calcFraudScore(p.name);
+        if (!data) return null;
+        return { name: p.name, ...data };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.fraudScore - a.fraudScore)
+      .slice(0, 4);
+
+    if (suspects.length === 0) {
+      fwResult.innerHTML = `<div class="wp-result-empty">No official matches played yet.</div>`;
+      return;
+    }
+
+    const medals = ["🥇", "🥈", "🥉", "4️⃣"];
+    const colors  = ["#ff5050", "#ff7f50", "#ffaa33", "var(--muted)"];
+
+    fwResult.innerHTML = `<div class="fw-header">Ranked by Fraud Score</div>` +
+      suspects.map((s, i) => `
+        <div class="fw-suspect">
+          <span class="fw-rank" style="color:${colors[i]}">${medals[i]}</span>
+          <div class="fw-info">
+            <div class="fw-name">${s.name}</div>
+            <div class="fw-reason">${s.reason}</div>
+          </div>
+          <div class="fw-score-wrap">
+            <span class="fw-score" style="color:${colors[i]}">${s.fraudScore}</span>
+            <span class="fw-label">Fraud Score</span>
+          </div>
+        </div>`
+      ).join("");
+  }
+
+  renderFW();
 </script>
 
 <script>
