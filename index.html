@@ -1223,7 +1223,7 @@ nav ul li a{
     { player: "Parker G",  type: "friendly", opponent: "Ansh J",    myScore: 5,  oppScore: 2,  date: "June 4, 2026" },
     { player: "Ansh J",    type: "friendly", opponent: "Parker G",  myScore: 2,  oppScore: 5,  date: "June 4, 2026" },
     { player: "Parker G",    type: "win", opponent: "Ansh J",  myScore: 15,  oppScore: 7,  date: "June 5, 2026" },
-    { player: "Ansh J",    type: "win", opponent: "Parker G",  myScore: 7,  oppScore: 15,  date: "June 5, 2026" },
+    { player: "Ansh J",    type: "loss", opponent: "Parker G",  myScore: 7,  oppScore: 15,  date: "June 5, 2026" },
     { player: "Anthony A",    type: "win", opponent: "Monson K",  myScore: 15,  oppScore: 12,  date: "June 5, 2026" },
     { player: "Monson K",    type: "loss", opponent: "Anthony A",  myScore: 12,  oppScore: 15,  date: "June 5, 2026" },
   ];
@@ -1560,25 +1560,61 @@ nav ul li a{
     const pB = players.find(p => p.name === nameB);
     if (!pA || !pB) return null;
 
+    // 1. WIN RATE (20%)
     const wrA = (pA.wins + pA.losses) > 0 ? pA.wins / (pA.wins + pA.losses) : 0.5;
     const wrB = (pB.wins + pB.losses) > 0 ? pB.wins / (pB.wins + pB.losses) : 0.5;
+    const wrEdge = 0.5 + ((wrA - wrB) * 0.20);
 
+    // 2. HEAD-TO-HEAD (25%)
     const h2hA = matchHistory.filter(m => m.player === nameA && m.opponent === nameB && m.type === "win").length;
     const h2hB = matchHistory.filter(m => m.player === nameB && m.opponent === nameA && m.type === "win").length;
     const h2hTotal = h2hA + h2hB;
     const h2hRateA = h2hTotal > 0 ? h2hA / h2hTotal : 0.5;
+    const h2hEdge = 0.5 + ((h2hRateA - 0.5) * 0.25);
 
+    // 3. POWER RANKING (25%)
+    const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.25;
+    const rankEdge = 0.5 + rankEdgeA;
+
+    // 4. POINT DIFFERENTIAL (15%)
+    const matchesA = matchHistory.filter(m => m.player === nameA && m.type !== "friendly");
+    const matchesB = matchHistory.filter(m => m.player === nameB && m.type !== "friendly");
+    const avgDiffA = matchesA.length > 0
+      ? matchesA.reduce((s, m) => s + (m.myScore - m.oppScore), 0) / matchesA.length : 0;
+    const avgDiffB = matchesB.length > 0
+      ? matchesB.reduce((s, m) => s + (m.myScore - m.oppScore), 0) / matchesB.length : 0;
+    const diffEdge = 0.5 + (Math.max(-15, Math.min(15, avgDiffA - avgDiffB)) / 15) * 0.15;
+
+    // 5. STRENGTH OF SCHEDULE (10%)
+    function avgOppWinRate(name) {
+      const ms = matchHistory.filter(m => m.player === name && m.type !== "friendly");
+      if (ms.length === 0) return 0.5;
+      const rates = ms.map(m => {
+        const opp = players.find(x => x.name === m.opponent);
+        if (!opp) return 0.5;
+        const t = opp.wins + opp.losses;
+        return t > 0 ? opp.wins / t : 0.5;
+      });
+      return rates.reduce((s, r) => s + r, 0) / rates.length;
+    }
+    const sosA = avgOppWinRate(nameA);
+    const sosB = avgOppWinRate(nameB);
+    const sosEdge = 0.5 + ((sosA - sosB) * 0.10);
+
+    // 6. MOMENTUM / STREAK (5%)
     function streakVal(streak) {
       const m = streak.match(/([WL])(\d+)/);
       if (!m) return 0;
-      const mag = Math.min(parseInt(m[2]), 4) * 0.05;
+      const mag = Math.min(parseInt(m[2]), 4) * 0.0125;
       return m[1] === "W" ? mag : -mag;
     }
     const momA = streakVal(pA.streak);
     const momB = streakVal(pB.streak);
-    const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.08;
+    const momEdge = 0.5 + (momA - momB);
 
-    let rawA = (wrA * 0.25) + (h2hRateA * 0.30) + ((0.5 + momA - momB) * 0.15) + ((0.5 + rankEdgeA) * 0.30);
+    // COMBINE ALL COMPONENTS
+    let rawA = (wrEdge * 0.15) + (h2hEdge * 0.25) + (rankEdge * 0.30) +
+               (diffEdge * 0.20) + (sosEdge * 0.5) + (momEdge * 0.05);
     rawA = Math.max(0.05, Math.min(0.95, rawA));
     const probA = Math.round(rawA * 100);
     const probB = 100 - probA;
@@ -1588,6 +1624,8 @@ nav ul li a{
       factors: [
         `Overall record: ${pA.wins}-${pA.losses} vs ${pB.wins}-${pB.losses}`,
         h2hTotal > 0 ? `Head-to-head: ${nameA.split(" ")[0]} ${h2hA}-${h2hB} ${nameB.split(" ")[0]}` : `Head-to-head: No official matches`,
+        `Avg pt diff: ${avgDiffA >= 0 ? "+" : ""}${avgDiffA.toFixed(1)} vs ${avgDiffB >= 0 ? "+" : ""}${avgDiffB.toFixed(1)}`,
+        `SOS: ${(sosA * 100).toFixed(0)}% vs ${(sosB * 100).toFixed(0)}% avg opp win rate`,
         `Streak: ${pA.streak || "—"} vs ${pB.streak || "—"}`,
         `Power ranking: #${pA.ranking} vs #${pB.ranking}`,
       ]
