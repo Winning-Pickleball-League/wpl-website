@@ -148,8 +148,8 @@ section{
     border:1px solid var(--line);
 }
 
-/* WEEK TAG */
-.week-tag{
+/* SEASON TAG */
+.season-tag{
     display:inline-block;
     margin:10px 0 15px;
     padding:6px 14px;
@@ -1070,7 +1070,7 @@ nav ul li a{
 <section id="standings">
 <h2 class="section-title">Standings</h2>
 
-<div class="week-tag">Week 1</div>
+<div class="season-tag">Season 1</div>
 
 <div class="card">
 <div class="table-scroll">
@@ -1093,20 +1093,20 @@ nav ul li a{
 
 <div class="card">
 <div class="rank-item"><span>#1 Parker G</span><span>—</span></div>
-<div class="rank-item"><span>#2 Grady B</span><span style="color:green">▲1</span></div>
-<div class="rank-item"><span>#3 Ansh J</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#4 Seth C</span><span>—</span></div>
-<div class="rank-item"><span>#5 Larin D</span><span>—</span></div>
+<div class="rank-item"><span>#2 Grady B</span><span>—</span></div>
+<div class="rank-item"><span>#3 Ansh J</span><span>—</span></div>
+<div class="rank-item"><span>#4 Larin D</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#5 Anthony A</span><span style="color:green">▲1</span></div>
 
 <details>
 <summary>Show More</summary>
-<div class="rank-item"><span>#6 Anthony A</span><span style="color:green">▲4</span></div>
-<div class="rank-item"><span>#7 Kaili G</span><span>NEW</span></div>
-<div class="rank-item"><span>#8 Isaac T</span><span>—</span></div>
-<div class="rank-item"><span>#9 Amir A</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#10 Hunter P</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#11 Zaeem N</span><span style="color:red">▼4</span></div>
-<div class="rank-item"><span>#12 Monson K</span><span>NEW (DNP)</span></div>
+<div class="rank-item"><span>#6 Monson </span><span style="color:green">▲6</span></div>
+<div class="rank-item"><span>#7 Seth C</span><span style="color:red">▼3</span></div>
+<div class="rank-item"><span>#8 Kaili G</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#9 Isaac T</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#10 Amir A</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#11 Hunter P</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#12 Zaeem N</span><span style="color:red">▼1</span></div>
 </details>
 </div>
 </section>
@@ -1198,18 +1198,18 @@ nav ul li a{
   // streak: '🔥 W2' for win streak, '🧊 L2' for loss streak, '—' for none
   // ranking: power ranking number
   const players = [
-    { name: "Parker G",  wins: 0, losses: 0, streak: "—",  ranking: 1  },
+    { name: "Parker G",  wins: 1, losses: 0, streak: "W1",  ranking: 1  },
     { name: "Grady B",   wins: 0, losses: 0, streak: "—",  ranking: 2  },
-    { name: "Ansh J",    wins: 1, losses: 0, streak: "W1", ranking: 3  },
-    { name: "Seth C",    wins: 0, losses: 0, streak: "—",  ranking: 4  },
-    { name: "Larin D",   wins: 0, losses: 0, streak: "—",  ranking: 5  },
-    { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 8  },
-    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 9  },
-    { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 7  },
-    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—",  ranking: 11  },
-    { name: "Hunter P",  wins: 0, losses: 0, streak: "—",  ranking: 10 },
-    { name: "Anthony A", wins: 0, losses: 1, streak: "L1", ranking: 6 },
-    { name: "Monson K",  wins: 0, losses: 0, streak: "—",  ranking: 12 },
+    { name: "Ansh J",    wins: 1, losses: 1, streak: "L1", ranking: 3  },
+    { name: "Seth C",    wins: 0, losses: 0, streak: "—",  ranking: 7  },
+    { name: "Larin D",   wins: 0, losses: 0, streak: "—",  ranking: 4  },
+    { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 9  },
+    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 10  },
+    { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 8  },
+    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—",  ranking: 12  },
+    { name: "Hunter P",  wins: 0, losses: 0, streak: "—",  ranking: 11 },
+    { name: "Anthony A", wins: 1, losses: 1, streak: "W1", ranking: 5 },
+    { name: "Monson K",  wins: 0, losses: 1, streak: "L1",  ranking: 6 },
   ];
 
   // ── EDIT MATCH HISTORY HERE ───────────────────────────────────────
@@ -1222,6 +1222,10 @@ nav ul li a{
     { player: "Anthony A", type: "friendly", opponent: "Ansh J",    myScore: 1,  oppScore: 5,  date: "June 4, 2026" },
     { player: "Parker G",  type: "friendly", opponent: "Ansh J",    myScore: 5,  oppScore: 2,  date: "June 4, 2026" },
     { player: "Ansh J",    type: "friendly", opponent: "Parker G",  myScore: 2,  oppScore: 5,  date: "June 4, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Ansh J",  myScore: 15,  oppScore: 7,  date: "June 5, 2026" },
+    { player: "Ansh J",    type: "win", opponent: "Parker G",  myScore: 7,  oppScore: 15,  date: "June 5, 2026" },
+    { player: "Anthony A",    type: "win", opponent: "Monson K",  myScore: 15,  oppScore: 12,  date: "June 5, 2026" },
+    { player: "Monson K",    type: "loss", opponent: "Anthony A",  myScore: 12,  oppScore: 15,  date: "June 5, 2026" },
   ];
   // ──────────────────────────────────────────────────────────────────
 
@@ -1361,7 +1365,7 @@ nav ul li a{
   // ── EDIT PLAYER OF THE WEEK HERE ──────────────────────────────────
   const potw = {
     name: "Parker G",
-    weekRecord: "0-0 this week",
+    seasonRecord: "1-0 this season",
     reason: "He made the whole website and it took him a very long time."
   };
   // ──────────────────────────────────────────────────────────────────
@@ -1370,10 +1374,10 @@ nav ul li a{
     <div class="potw-card">
       <div class="potw-trophy">🏆</div>
       <div>
-        <div class="potw-label">Player of the Week</div>
+        <div class="potw-label">Player of the Season</div>
         <div class="potw-name">${potw.name}</div>
         <div class="potw-reason">${potw.reason}</div>
-        <span class="potw-record">${potw.weekRecord}</span>
+        <span class="potw-record">${potw.seasonRecord}</span>
       </div>
     </div>
   `;
@@ -1524,19 +1528,19 @@ nav ul li a{
   // ─────────────────────────────────────────────────────────────────
   const matchResults = [
     {
-      winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
+      winner: "Parker G", loser: "Ansh J", score: "15 — 7", type: "official",
+      prob: { winner: 49, loser: 51 },
+      mqs: { leadChanges: 4, closeness: 5, upsetFactor: 4 }
+    },
+    {
+      winner: "Anthony A", loser: "Monson K", score: "15 — 12", type: "official",
+      prob: { winner: 32, loser: 68 },
+      mqs: { leadChanges: 7, closeness: 9, upsetFactor: 4 }
+    },
+    {
+    winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
       prob: { winner: 73, loser: 27 },
-      mqs: { leadChanges: 7, closeness: 5, upsetFactor: 4 }
-    },
-    {
-      winner: "Ansh J", loser: "Anthony A", score: "5 — 1", type: "friendly",
-      prob: { winner: 65, loser: 35 },
-      mqs: { leadChanges: 1, closeness: 3, upsetFactor: 2 }
-    },
-    {
-      winner: "Parker G", loser: "Ansh J", score: "5 — 2", type: "friendly",
-      prob: { winner: 64, loser: 36 },
-      mqs: { leadChanges: 4, closeness: 4, upsetFactor: 3 }
+      mqs: { leadChanges: 7, closeness: 5, upsetFactor: 6 }
     },
   ];
   // ──────────────────────────────────────────────────────────────────
