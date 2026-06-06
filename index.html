@@ -176,13 +176,21 @@ tr{border-bottom:1px solid var(--line);}
 
 /* MATCHES */
 .match-group{
-    border-bottom:1px solid var(--line);
-    padding:10px 0;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:10px;
     text-align:center;
+    transition:border-color 0.2s;
 }
 
 .match-group:last-child{
-    border-bottom:none;
+    margin-bottom:0;
+}
+
+.match-group:hover{
+    border-color:rgba(210,180,140,0.25);
 }
 
 .friendly-tag{
@@ -195,7 +203,7 @@ tr{border-bottom:1px solid var(--line);}
     border:1px solid var(--line);
     border-radius:999px;
     padding:2px 10px;
-    margin-bottom:6px;
+    margin-bottom:8px;
 }
 
 .match{
@@ -213,14 +221,16 @@ tr{border-bottom:1px solid var(--line);}
 }
 
 .match-score{
-    font-size:0.9rem;
-    color:var(--muted);
+    font-size:0.95rem;
+    font-weight:600;
+    color:var(--text);
     text-align:center;
     flex-shrink:0;
-    padding:4px 12px;
+    padding:6px 16px;
+    background:rgba(255,255,255,0.05);
     border:1px solid var(--line);
     border-radius:999px;
-    width:90px;
+    width:100px;
 }
 
 .match-loser{
@@ -670,44 +680,174 @@ summary{
     border-radius:999px;
 }
 
-/* ADVANCED ANALYTICS — CAROUSEL */
-.carousel{
-    display:flex;
-    gap:14px;
-    overflow-x:auto;
-    padding-bottom:10px;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-}
-.carousel::-webkit-scrollbar{ display:none; }
-
-/* ANALYTICS CARDS — shared base */
-.wp-card{
-    flex:0 0 280px;
-    scroll-snap-align:start;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:22px 20px;
+/* ADVANCED ANALYTICS — ESPN LADDER */
+.analytics-ladder{
     display:flex;
     flex-direction:column;
-    gap:14px;
-    min-height:260px;
+    gap:0;
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
 }
 
-.wp-card-title{
+.ladder-rung{
+    display:flex;
+    align-items:center;
+    gap:0;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition:background 0.18s;
+    position:relative;
+    overflow:hidden;
+}
+.ladder-rung:last-child{ border-bottom:none; }
+.ladder-rung:hover{ background:rgba(210,180,140,0.06); }
+.ladder-rung:hover .rung-arrow{ transform:translateX(3px); }
+.ladder-rung:active{ background:rgba(210,180,140,0.1); }
+
+.rung-index{
+    font-family:'Oswald',sans-serif;
+    font-size:1.5rem;
+    font-weight:700;
+    color:rgba(255,255,255,0.08);
+    width:60px;
+    text-align:center;
+    flex-shrink:0;
+    padding:22px 0;
+    border-right:1px solid var(--line);
+}
+
+.rung-icon{
+    font-size:1.6rem;
+    width:64px;
+    text-align:center;
+    flex-shrink:0;
+}
+
+.rung-body{
+    flex:1;
+    padding:18px 12px 18px 0;
+}
+
+.rung-title{
     font-family:'Oswald',sans-serif;
     font-size:1.1rem;
-    color:var(--accent);
-    letter-spacing:0.5px;
+    color:var(--text);
+    letter-spacing:0.3px;
+    margin-bottom:3px;
 }
 
-/* DROPDOWNS */
+.rung-sub{
+    font-size:0.78rem;
+    color:var(--muted);
+    line-height:1.4;
+}
+
+.rung-badge{
+    font-size:0.68rem;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:999px;
+    margin-top:6px;
+    display:inline-block;
+}
+
+.rung-arrow{
+    color:var(--muted);
+    font-size:1.1rem;
+    padding-right:20px;
+    flex-shrink:0;
+    transition:transform 0.18s;
+}
+
+/* ANALYTICS MODAL */
+.analytics-modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    z-index:3000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+.analytics-modal-overlay.open{
+    display:flex;
+    animation:fadeOverlay 0.2s ease;
+}
+.analytics-modal-overlay.open .analytics-modal{
+    animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.analytics-modal{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:22px;
+    width:100%;
+    max-width:520px;
+    max-height:88vh;
+    overflow-y:auto;
+    position:relative;
+}
+
+.analytics-modal-header{
+    padding:24px 24px 0;
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+    position:sticky;
+    top:0;
+    background:var(--card);
+    z-index:1;
+    border-radius:22px 22px 0 0;
+}
+
+.analytics-modal-icon{ font-size:2rem; flex-shrink:0; margin-top:2px; }
+
+.analytics-modal-titles{ flex:1; }
+
+.analytics-modal-title{
+    font-family:'Oswald',sans-serif;
+    font-size:1.5rem;
+    color:var(--accent);
+    margin-bottom:3px;
+}
+
+.analytics-modal-desc{
+    font-size:0.82rem;
+    color:var(--muted);
+    line-height:1.5;
+}
+
+.analytics-modal-close{
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:1rem;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:color 0.15s, background 0.15s;
+}
+.analytics-modal-close:hover{ color:var(--text); background:rgba(255,255,255,0.1); }
+
+.analytics-modal-body{
+    padding:22px 24px 24px;
+}
+
+/* DROPDOWNS (reused inside modals) */
 .wp-selects{
     display:flex;
     align-items:center;
     gap:8px;
+    margin-bottom:16px;
 }
 
 .wp-select{
@@ -737,14 +877,13 @@ summary{
     display:flex;
     flex-direction:column;
     gap:8px;
-    flex:1;
 }
 
 .wp-result-empty{
     color:var(--muted);
     font-size:0.82rem;
-    margin:auto 0;
     text-align:center;
+    padding:20px 0;
 }
 
 .wp-matchup-names{
@@ -798,23 +937,8 @@ summary{
 }
 .wp-factors span{ display:block; }
 
-/* PLACEHOLDER CARDS */
-.wp-card-placeholder{
-    align-items:center;
-    justify-content:center;
-    opacity:0.4;
-    border-style:dashed;
-}
-.wp-placeholder-icon{ font-size:2rem; }
-.wp-placeholder-label{
-    font-family:'Oswald',sans-serif;
-    font-size:1rem;
-    color:var(--text);
-}
-.wp-placeholder-sub{
-    font-size:0.75rem;
-    color:var(--muted);
-}
+/* PLACEHOLDER CARDS — kept for compat */
+.wp-card-placeholder{ opacity:0.4; }
 
 /* PLAYER ADVANCED STATS */
 .ps-stat-row{
@@ -1133,48 +1257,74 @@ nav ul li a{
 <section id="analytics">
 <h2 class="section-title">Advanced Analytics</h2>
 
-<div class="carousel" id="analytics-carousel">
+<div class="analytics-ladder">
 
-  <!-- PLAYER ADVANCED STATS CARD -->
-  <div class="wp-card">
-    <div class="wp-card-title">📊 Player Profile</div>
-    <div class="wp-selects">
-      <select id="ps-select" class="wp-select" style="flex:1;">
-        <option value="">Select Player</option>
-      </select>
+  <div class="ladder-rung" onclick="openAnalyticsModal('player-stats')">
+    <div class="rung-index">01</div>
+    <div class="rung-icon">📊</div>
+    <div class="rung-body">
+      <div class="rung-title">Player Advanced Stats</div>
+      <div class="rung-sub">Strength of Schedule · Player Efficiency Score · Clutch Rating</div>
+      <span class="rung-badge" style="background:rgba(210,180,140,0.12); color:var(--accent); border:1px solid rgba(210,180,140,0.3);">Deep Dive</span>
     </div>
-    <div id="ps-result" class="wp-result"></div>
+    <div class="rung-arrow">›</div>
   </div>
 
-  <!-- WIN PROBABILITY CARD -->
-  <div class="wp-card">
-    <div class="wp-card-title">🎯 Win Probability</div>
-    <div class="wp-selects">
-      <select id="wp-select-a" class="wp-select">
-        <option value="">Select Player</option>
-      </select>
-      <span class="wp-vs-label">vs</span>
-      <select id="wp-select-b" class="wp-select">
-        <option value="">Select Player</option>
-      </select>
+  <div class="ladder-rung" onclick="openAnalyticsModal('matchup')">
+    <div class="rung-index">02</div>
+    <div class="rung-icon">🎯</div>
+    <div class="rung-body">
+      <div class="rung-title">Matchup Predictor</div>
+      <div class="rung-sub">Win probability · H2H record · Point diff · SOS · Momentum</div>
+      <span class="rung-badge" style="background:rgba(0,200,100,0.1); color:#00c864; border:1px solid rgba(0,200,100,0.25);">Live Model</span>
     </div>
-    <div id="wp-result" class="wp-result"></div>
+    <div class="rung-arrow">›</div>
   </div>
 
-  <!-- FRAUD WATCH CARD -->
-  <div class="wp-card">
-    <div class="wp-card-title">🚨 Fraud Watch</div>
-    <div id="fw-result" class="wp-result"></div>
+  <div class="ladder-rung" onclick="openAnalyticsModal('fraud-watch')">
+    <div class="rung-index">03</div>
+    <div class="rung-icon">🚨</div>
+    <div class="rung-body">
+      <div class="rung-title">Fraud Watch</div>
+      <div class="rung-sub">Who's ranked higher than they deserve? Point diff · Weak SOS · Overratedness</div>
+      <span class="rung-badge" style="background:rgba(255,80,80,0.1); color:#ff5050; border:1px solid rgba(255,80,80,0.25);">Leaderboard</span>
+    </div>
+    <div class="rung-arrow">›</div>
+  </div>
+
+  <div class="ladder-rung" onclick="openAnalyticsModal('dominance')">
+    <div class="rung-index">04</div>
+    <div class="rung-icon">👑</div>
+    <div class="rung-body">
+      <div class="rung-title">Dominance Index</div>
+      <div class="rung-sub">Who's actually running the league? Point diff · Strong SOS · Underratedness</div>
+      <span class="rung-badge" style="background:rgba(255,215,0,0.1); color:gold; border:1px solid rgba(255,215,0,0.3);">Leaderboard</span>
+    </div>
+    <div class="rung-arrow">›</div>
   </div>
 
 </div>
-
 </section>
+
+<!-- ANALYTICS MODAL -->
+<div class="analytics-modal-overlay" id="analytics-modal-overlay">
+  <div class="analytics-modal" id="analytics-modal">
+    <div class="analytics-modal-header">
+      <div class="analytics-modal-icon" id="am-icon"></div>
+      <div class="analytics-modal-titles">
+        <div class="analytics-modal-title" id="am-title"></div>
+        <div class="analytics-modal-desc" id="am-desc"></div>
+      </div>
+      <button class="analytics-modal-close" onclick="closeAnalyticsModal()">✕</button>
+    </div>
+    <div class="analytics-modal-body" id="am-body"></div>
+  </div>
+</div>
 
 <!-- MATCH RESULTS -->
 <section id="matches">
 <h2 class="section-title">Match Results</h2>
-<div class="card" id="match-results-card">
+<div class="card" id="match-results-card" style="padding:12px; background:transparent; border:none;">
 <!-- Auto-generated by JS below -->
 </div>
 </section>
@@ -1234,17 +1384,21 @@ nav ul li a{
     return name.split(" ").map(w => w[0]).join("").toUpperCase();
   }
 
-  // Auto-calculate points from official matches only (no friendlies)
-  players.forEach(p => {
-    p.points = matchHistory
-      .filter(m => m.player === p.name && m.type !== "friendly")
-      .reduce((sum, m) => sum + m.myScore, 0);
+  // Helper: cap score at 15 for differential purposes (win-by-2 extra points don't count)
+  function cappedScore(score) { return Math.min(score, 15); }
 
-    // Point differential: points scored minus points allowed
-    p.pointsAllowed = matchHistory
-      .filter(m => m.player === p.name && m.type !== "friendly")
-      .reduce((sum, m) => sum + m.oppScore, 0);
-    p.diff = p.points - p.pointsAllowed;
+  // Auto-calculate points from official matches only (no friendlies)
+  // Total points use actual score. Differential caps each score at 15.
+  players.forEach(p => {
+    const officialMatches = matchHistory.filter(m => m.player === p.name && m.type !== "friendly");
+
+    // Total points: use real score (extra win-by-2 points count)
+    p.points = officialMatches.reduce((sum, m) => sum + m.myScore, 0);
+
+    // Point differential: cap both scores at 15 so win-by-2 extras don't inflate it
+    p.pointsAllowed = officialMatches.reduce((sum, m) => sum + cappedScore(m.oppScore), 0);
+    const cappedPoints = officialMatches.reduce((sum, m) => sum + cappedScore(m.myScore), 0);
+    p.diff = cappedPoints - p.pointsAllowed;
   });
 
   // Calculate win % and sort
@@ -1554,38 +1708,33 @@ nav ul li a{
   }
 
   const matchCard = document.getElementById("match-results-card");
-  // ── ADVANCED ANALYTICS: WIN PROBABILITY (DROPDOWN) ───────────────
+  // ── ADVANCED ANALYTICS: WIN PROBABILITY ─────────────────────────────
   function calcWinProb(nameA, nameB) {
     const pA = players.find(p => p.name === nameA);
     const pB = players.find(p => p.name === nameB);
     if (!pA || !pB) return null;
 
-    // 1. WIN RATE (20%)
     const wrA = (pA.wins + pA.losses) > 0 ? pA.wins / (pA.wins + pA.losses) : 0.5;
     const wrB = (pB.wins + pB.losses) > 0 ? pB.wins / (pB.wins + pB.losses) : 0.5;
     const wrEdge = 0.5 + ((wrA - wrB) * 0.20);
 
-    // 2. HEAD-TO-HEAD (25%)
     const h2hA = matchHistory.filter(m => m.player === nameA && m.opponent === nameB && m.type === "win").length;
     const h2hB = matchHistory.filter(m => m.player === nameB && m.opponent === nameA && m.type === "win").length;
     const h2hTotal = h2hA + h2hB;
     const h2hRateA = h2hTotal > 0 ? h2hA / h2hTotal : 0.5;
     const h2hEdge = 0.5 + ((h2hRateA - 0.5) * 0.25);
 
-    // 3. POWER RANKING (25%)
     const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.25;
     const rankEdge = 0.5 + rankEdgeA;
 
-    // 4. POINT DIFFERENTIAL (15%)
     const matchesA = matchHistory.filter(m => m.player === nameA && m.type !== "friendly");
     const matchesB = matchHistory.filter(m => m.player === nameB && m.type !== "friendly");
     const avgDiffA = matchesA.length > 0
-      ? matchesA.reduce((s, m) => s + (m.myScore - m.oppScore), 0) / matchesA.length : 0;
+      ? matchesA.reduce((s, m) => s + (cappedScore(m.myScore) - cappedScore(m.oppScore)), 0) / matchesA.length : 0;
     const avgDiffB = matchesB.length > 0
-      ? matchesB.reduce((s, m) => s + (m.myScore - m.oppScore), 0) / matchesB.length : 0;
+      ? matchesB.reduce((s, m) => s + (cappedScore(m.myScore) - cappedScore(m.oppScore)), 0) / matchesB.length : 0;
     const diffEdge = 0.5 + (Math.max(-15, Math.min(15, avgDiffA - avgDiffB)) / 15) * 0.15;
 
-    // 5. STRENGTH OF SCHEDULE (10%)
     function avgOppWinRate(name) {
       const ms = matchHistory.filter(m => m.player === name && m.type !== "friendly");
       if (ms.length === 0) return 0.5;
@@ -1601,7 +1750,6 @@ nav ul li a{
     const sosB = avgOppWinRate(nameB);
     const sosEdge = 0.5 + ((sosA - sosB) * 0.10);
 
-    // 6. MOMENTUM / STREAK (5%)
     function streakVal(streak) {
       const m = streak.match(/([WL])(\d+)/);
       if (!m) return 0;
@@ -1612,7 +1760,6 @@ nav ul li a{
     const momB = streakVal(pB.streak);
     const momEdge = 0.5 + (momA - momB);
 
-    // COMBINE ALL COMPONENTS
     let rawA = (wrEdge * 0.15) + (h2hEdge * 0.25) + (rankEdge * 0.30) +
                (diffEdge * 0.20) + (sosEdge * 0.5) + (momEdge * 0.05);
     rawA = Math.max(0.05, Math.min(0.95, rawA));
@@ -1639,105 +1786,38 @@ nav ul li a{
                     return { label: "Coin Flip",       color: "var(--muted)"  };
   }
 
-  // Populate dropdowns
-  const selA = document.getElementById("wp-select-a");
-  const selB = document.getElementById("wp-select-b");
-  players.forEach(p => {
-    selA.innerHTML += `<option value="${p.name}">${p.name}</option>`;
-    selB.innerHTML += `<option value="${p.name}">${p.name}</option>`;
-  });
-
-  function renderWP() {
-    const a = selA.value;
-    const b = selB.value;
-    const result = document.getElementById("wp-result");
-
-    if (!a || !b || a === b) {
-      result.innerHTML = `<div class="wp-result-empty">Select two different players to see win probability.</div>`;
-      return;
-    }
-
-    const data = calcWinProb(a, b);
-    if (!data) return;
-    const { probA, probB, factors } = data;
-    const conf = wpConfidence(Math.abs(probA - probB));
-
-    result.innerHTML = `
-      <div class="wp-matchup-names">
-        <span class="wp-name-a">${a}</span>
-        <span class="wp-name-b">${b}</span>
-      </div>
-      <div class="wp-bar-wrap"><div class="wp-bar-fill" id="wp-bar" style="width:0%"></div></div>
-      <div class="wp-pcts">
-        <span class="wp-pct-a">${probA}%</span>
-        <span class="wp-pct-b">${probB}%</span>
-      </div>
-      <span class="wp-confidence" style="background:${conf.color}22; color:${conf.color}; border:1px solid ${conf.color}55;">${conf.label}</span>
-      <div class="wp-factors">${factors.map(f => `<span>· ${f}</span>`).join("")}</div>
-    `;
-    setTimeout(() => {
-      const bar = document.getElementById("wp-bar");
-      if (bar) bar.style.width = probA + "%";
-    }, 50);
-  }
-
-  selA.addEventListener("change", renderWP);
-  selB.addEventListener("change", renderWP);
-  renderWP();
-
   // ── PLAYER ADVANCED STATS ─────────────────────────────────────────
-
-  // Populate player dropdown
-  const selPS = document.getElementById("ps-select");
-  players.forEach(p => {
-    selPS.innerHTML += `<option value="${p.name}">${p.name}</option>`;
-  });
-
   function calcPlayerStats(name) {
     const p = players.find(x => x.name === name);
     if (!p) return null;
 
     const officialMatches = matchHistory.filter(m => m.player === name && m.type !== "friendly");
-
-    // ── 1. STRENGTH OF SCHEDULE ──────────────────────────────────────
-    // Average power ranking of opponents faced (official only).
-    // Lower avg ranking = tougher schedule. Normalized to 0–100 (100 = hardest).
     const maxRanking = players.length;
-    let sosScore = null;
-    let sosNote  = "No official matches yet";
+    let sosScore = null, sosNote = "No official matches yet";
     if (officialMatches.length > 0) {
       const oppRankings = officialMatches.map(m => {
         const opp = players.find(x => x.name === m.opponent);
         return opp ? opp.ranking : maxRanking;
       });
       const avgOppRank = oppRankings.reduce((s, r) => s + r, 0) / oppRankings.length;
-      // Invert: rank 1 opponent = hardest. Score 0–100.
       sosScore = Math.round(((maxRanking - avgOppRank) / (maxRanking - 1)) * 100);
       sosNote  = `Avg opp ranking: #${avgOppRank.toFixed(1)}`;
     }
 
-    // ── 2. PLAYER EFFICIENCY SCORE ───────────────────────────────────
-    // Formula: (win% × 40) + (normalized point diff × 35) + (sos × 25)
-    // Point diff: avg points scored minus avg points allowed in official matches.
-    let pesScore = null;
-    let pesNote  = "No official matches yet";
+    let pesScore = null, pesNote = "No official matches yet";
     if (officialMatches.length > 0) {
       const winRate = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
-      const avgScored   = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
-      const avgAllowed  = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
-      const pointDiff   = avgScored - avgAllowed;
-      // Normalize point diff to 0–1 (cap at ±15 pts)
-      const normDiff    = Math.max(0, Math.min(1, (pointDiff + 15) / 30));
-      const sosFactor   = sosScore !== null ? sosScore / 100 : 0.5;
+      const avgScored  = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
+      const avgAllowed = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
+      const pointDiff  = avgScored - avgAllowed;
+      const normDiff   = Math.max(0, Math.min(1, (pointDiff + 15) / 30));
+      const sosFactor  = sosScore !== null ? sosScore / 100 : 0.5;
       pesScore = Math.round((winRate * 40) + (normDiff * 35) + (sosFactor * 25));
-      pesNote  = `+${pointDiff.toFixed(1)} pt diff/game`;
+      pesNote  = `${pointDiff >= 0 ? "+" : ""}${pointDiff.toFixed(1)} pt diff/game`;
     }
 
-    // ── 3. CLUTCH RATING ─────────────────────────────────────────────
-    // Win% in official games decided by 3 pts or fewer.
     const clutchMatches = officialMatches.filter(m => Math.abs(m.myScore - m.oppScore) <= 3);
-    let clutchScore = null;
-    let clutchNote  = "No clutch games yet";
+    let clutchScore = null, clutchNote = "No clutch games yet";
     if (clutchMatches.length > 0) {
       const clutchWins = clutchMatches.filter(m => m.type === "win").length;
       clutchScore = Math.round((clutchWins / clutchMatches.length) * 100);
@@ -1747,104 +1827,43 @@ nav ul li a{
     return { sosScore, sosNote, pesScore, pesNote, clutchScore, clutchNote };
   }
 
-  function gradeColor(score, invert = false) {
+  function gradeColor(score) {
     if (score === null) return { label: "N/A", color: "var(--muted)" };
-    const s = invert ? 100 - score : score;
-    if (s >= 75) return { label: "Elite",    color: "gold"        };
-    if (s >= 55) return { label: "Strong",   color: "#00c864"     };
-    if (s >= 40) return { label: "Average",  color: "var(--accent)" };
-    if (s >= 20) return { label: "Below Avg",color: "#6ec6ff"     };
-                 return { label: "Weak",     color: "#ff5050"     };
+    if (score >= 75) return { label: "Elite",     color: "gold"          };
+    if (score >= 55) return { label: "Strong",    color: "#00c864"       };
+    if (score >= 40) return { label: "Average",   color: "var(--accent)" };
+    if (score >= 20) return { label: "Below Avg", color: "#6ec6ff"       };
+                     return { label: "Weak",      color: "#ff5050"       };
   }
-
-  function renderPS() {
-    const name   = selPS.value;
-    const result = document.getElementById("ps-result");
-
-    if (!name) {
-      result.innerHTML = `<div class="wp-result-empty">Select a player to see advanced stats.</div>`;
-      return;
-    }
-
-    const stats = calcPlayerStats(name);
-    if (!stats) return;
-    const { sosScore, sosNote, pesScore, pesNote, clutchScore, clutchNote } = stats;
-
-    const sosGrade    = gradeColor(sosScore);
-    const pesGrade    = gradeColor(pesScore);
-    const clutchGrade = gradeColor(clutchScore);
-
-    function statRow(label, value, note, grade) {
-      const valDisplay = value !== null ? value : "—";
-      return `
-        <div class="ps-stat-row">
-          <span class="ps-stat-label">${label}</span>
-          <div class="ps-stat-right">
-            <span class="ps-stat-value" style="color:${grade.color}">${valDisplay}${value !== null ? "" : ""}</span>
-            <span class="ps-stat-note">${note}</span>
-            ${value !== null ? `<span class="ps-grade" style="background:${grade.color}22; color:${grade.color}; border:1px solid ${grade.color}55;">${grade.label}</span>` : ""}
-          </div>
-        </div>`;
-    }
-
-    result.innerHTML =
-      statRow("Strength of Schedule", sosScore !== null ? sosScore : null, sosNote, sosGrade) +
-      statRow("Player Efficiency", pesScore !== null ? pesScore : null, pesNote, pesGrade) +
-      statRow("Clutch Rating", clutchScore !== null ? clutchScore + "%" : null, clutchNote, clutchGrade);
-  }
-
-  selPS.addEventListener("change", renderPS);
-  renderPS();
 
   // ── FRAUD WATCH ───────────────────────────────────────────────────
-  // Fraud score = weighted combo of point differential, SOS, and ranking vs record gap.
-  // Only players with at least 1 official match are considered.
-  // Higher fraud score = bigger fraud.
-
   function calcFraudScore(name) {
     const p = players.find(x => x.name === name);
     if (!p) return null;
-
     const officialMatches = matchHistory.filter(m => m.player === name && m.type !== "friendly");
     if (officialMatches.length === 0) return null;
 
-    // ── 1. POINT DIFFERENTIAL (35%) ──────────────────────────────────
-    // Average points scored minus average points allowed per game.
-    // Large negative diff = high fraud contribution.
-    const avgScored  = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
-    const avgAllowed = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
+    const avgScored  = officialMatches.reduce((s, m) => s + cappedScore(m.myScore),  0) / officialMatches.length;
+    const avgAllowed = officialMatches.reduce((s, m) => s + cappedScore(m.oppScore), 0) / officialMatches.length;
     const pointDiff  = avgScored - avgAllowed;
-    // Cap at ±15, invert so negative = high fraud (0–100)
-    const diffFraud = Math.round(Math.max(0, Math.min(100, ((-pointDiff + 15) / 30) * 100)));
+    const diffFraud  = Math.round(Math.max(0, Math.min(100, ((-pointDiff + 15) / 30) * 100)));
 
-    // ── 2. STRENGTH OF SCHEDULE (40%) ────────────────────────────────
-    // Uses opponent win % instead of ranking for more accurate SOS.
-    // Beating players with low win % = weak schedule = more fraudulent.
     const oppWinRates = officialMatches.map(m => {
       const opp = players.find(x => x.name === m.opponent);
       if (!opp) return 0.5;
-      const oppTotal = opp.wins + opp.losses;
-      return oppTotal > 0 ? opp.wins / oppTotal : 0.5;
+      const t = opp.wins + opp.losses;
+      return t > 0 ? opp.wins / t : 0.5;
     });
     const avgOppWinRate = oppWinRates.reduce((s, r) => s + r, 0) / oppWinRates.length;
-    // Low avg opp win rate = weak schedule = high fraud (0–100, inverted)
     const sosFraud = Math.round((1 - avgOppWinRate) * 100);
 
-    // ── 3. RANKING VS RECORD GAP (25%) ───────────────────────────────
-    // How overrated are you relative to your actual record?
-    // High ranking + bad record = big gap = fraud.
-    // A #11 ranked player going 0-1 is expected. A #1 going 0-3 is a fraud.
     const expectedWinRate = 1 - ((p.ranking - 1) / (players.length - 1));
     const actualWinRate   = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0.5;
     const gap = expectedWinRate - actualWinRate;
-    // Normalize gap to 0–100 (only positive gap = overrated = fraud)
     const overratedness = Math.round(Math.max(0, Math.min(100, gap * 100)));
 
-    // ── FINAL SCORE ───────────────────────────────────────────────────
-    // Point diff: 35%, SOS: 40%, Ranking vs record gap: 25%
     const fraudScore = Math.round((diffFraud * 0.35) + (sosFraud * 0.40) + (overratedness * 0.25));
 
-    // ── REASON TAGS ───────────────────────────────────────────────────
     const avgOppRankDisplay = officialMatches.map(m => {
       const opp = players.find(x => x.name === m.opponent);
       return opp ? opp.ranking : players.length;
@@ -1859,44 +1878,265 @@ nav ul li a{
     return { fraudScore, reason: reasons.join(" · "), pointDiff, actualWinRate };
   }
 
-  function renderFW() {
-    const fwResult = document.getElementById("fw-result");
+  // ── ESPN LADDER MODAL SYSTEM ──────────────────────────────────────
+  function openAnalyticsModal(type) {
+    const overlay = document.getElementById("analytics-modal-overlay");
+    const icon    = document.getElementById("am-icon");
+    const title   = document.getElementById("am-title");
+    const desc    = document.getElementById("am-desc");
+    const body    = document.getElementById("am-body");
 
-    const suspects = players
-      .map(p => {
+    if (type === "player-stats") {
+      icon.textContent  = "📊";
+      title.textContent = "Player Advanced Stats";
+      desc.textContent  = "SOS, Efficiency, and Clutch ratings for every player.";
+
+      // Build dropdown
+      let opts = players.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
+      body.innerHTML = `
+        <div class="wp-selects">
+          <select id="am-ps-select" class="wp-select">
+            <option value="">Select Player</option>${opts}
+          </select>
+        </div>
+        <div id="am-ps-result" class="wp-result">
+          <div class="wp-result-empty">Select a player to see advanced stats.</div>
+        </div>`;
+
+      document.getElementById("am-ps-select").addEventListener("change", function() {
+        const name   = this.value;
+        const result = document.getElementById("am-ps-result");
+        if (!name) { result.innerHTML = `<div class="wp-result-empty">Select a player to see advanced stats.</div>`; return; }
+        const stats = calcPlayerStats(name);
+        if (!stats) return;
+        const { sosScore, sosNote, pesScore, pesNote, clutchScore, clutchNote } = stats;
+        const sosG = gradeColor(sosScore), pesG = gradeColor(pesScore), clG = gradeColor(clutchScore);
+        function statRow(label, value, note, grade) {
+          return `<div class="ps-stat-row">
+            <span class="ps-stat-label">${label}</span>
+            <div class="ps-stat-right">
+              <span class="ps-stat-value" style="color:${grade.color}">${value !== null ? value : "—"}</span>
+              <span class="ps-stat-note">${note}</span>
+              ${value !== null ? `<span class="ps-grade" style="background:${grade.color}22;color:${grade.color};border:1px solid ${grade.color}55;">${grade.label}</span>` : ""}
+            </div>
+          </div>`;
+        }
+
+        // ── BIGGEST RIVAL ─────────────────────────────────────────────
+        // Find opponent with most combined official games, using closeness
+        // of record as a tiebreaker (closest to 50/50 = fiercest rivalry).
+        const officialHistory = matchHistory.filter(m => m.player === name && m.type !== "friendly");
+        let rivalHTML = `<div class="ps-stat-row">
+          <span class="ps-stat-label">Biggest Rival</span>
+          <div class="ps-stat-right">
+            <span class="ps-stat-value" style="color:var(--muted)">—</span>
+            <span class="ps-stat-note">No official matches yet</span>
+          </div>
+        </div>`;
+
+        if (officialHistory.length > 0) {
+          const h2h = {};
+          officialHistory.forEach(m => {
+            if (!h2h[m.opponent]) h2h[m.opponent] = { wins: 0, losses: 0, pts: [] };
+            if (m.type === "win")  h2h[m.opponent].wins++;
+            if (m.type === "loss") h2h[m.opponent].losses++;
+            h2h[m.opponent].pts.push(Math.abs(m.myScore - m.oppScore));
+          });
+
+          // Score each rivalry: total games (weight 60%) + closeness of record (40%)
+          const scored = Object.entries(h2h).map(([opp, rec]) => {
+            const total     = rec.wins + rec.losses;
+            const balance   = total > 1 ? 1 - (Math.abs(rec.wins - rec.losses) / total) : 0.5;
+            const avgMargin = rec.pts.reduce((s, v) => s + v, 0) / rec.pts.length;
+            // Low avg margin = tighter games = more intense
+            const tightness = Math.max(0, 1 - (avgMargin / 15));
+            const rivalScore = (total * 0.6) + (balance * 0.4) + (tightness * 0.3);
+            return { opp, wins: rec.wins, losses: rec.losses, total, rivalScore, avgMargin };
+          }).sort((a, b) => b.rivalScore - a.rivalScore);
+
+          if (scored.length > 0) {
+            const top = scored[0];
+            const recColor = top.wins > top.losses ? "#00c864" : top.wins < top.losses ? "#ff5050" : "var(--accent)";
+            const recLabel = top.wins > top.losses ? "leads series" : top.wins < top.losses ? "trails series" : "series tied";
+            rivalHTML = `<div class="ps-stat-row">
+              <span class="ps-stat-label">Biggest Rival</span>
+              <div class="ps-stat-right">
+                <span class="ps-stat-value" style="color:var(--text);font-size:0.95rem;">${top.opp}</span>
+                <span class="ps-stat-note" style="color:${recColor};font-weight:600;">${top.wins}–${top.losses} · ${recLabel}</span>
+                <span class="ps-stat-note">${top.total} game${top.total > 1 ? "s" : ""} · avg margin ${top.avgMargin.toFixed(1)} pts</span>
+              </div>
+            </div>`;
+          }
+        }
+
+        result.innerHTML =
+          statRow("Strength of Schedule", sosScore, sosNote, sosG) +
+          statRow("Player Efficiency",    pesScore, pesNote, pesG) +
+          statRow("Clutch Rating",        clutchScore !== null ? clutchScore + "%" : null, clutchNote, clG) +
+          rivalHTML;
+      });
+
+    } else if (type === "matchup") {
+      icon.textContent  = "🎯";
+      title.textContent = "Matchup Predictor";
+      desc.textContent  = "Model-driven win probability using 6 weighted factors.";
+
+      let opts = players.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
+      body.innerHTML = `
+        <div class="wp-selects">
+          <select id="am-wp-a" class="wp-select"><option value="">Player A</option>${opts}</select>
+          <span class="wp-vs-label">vs</span>
+          <select id="am-wp-b" class="wp-select"><option value="">Player B</option>${opts}</select>
+        </div>
+        <div id="am-wp-result" class="wp-result">
+          <div class="wp-result-empty">Select two different players to see win probability.</div>
+        </div>`;
+
+      function renderMatchupModal() {
+        const a = document.getElementById("am-wp-a").value;
+        const b = document.getElementById("am-wp-b").value;
+        const result = document.getElementById("am-wp-result");
+        if (!a || !b || a === b) { result.innerHTML = `<div class="wp-result-empty">Select two different players to see win probability.</div>`; return; }
+        const data = calcWinProb(a, b);
+        if (!data) return;
+        const { probA, probB, factors } = data;
+        const conf = wpConfidence(Math.abs(probA - probB));
+        result.innerHTML = `
+          <div class="wp-matchup-names"><span class="wp-name-a">${a}</span><span class="wp-name-b">${b}</span></div>
+          <div class="wp-bar-wrap"><div class="wp-bar-fill" id="am-wp-bar" style="width:0%"></div></div>
+          <div class="wp-pcts"><span class="wp-pct-a">${probA}%</span><span class="wp-pct-b">${probB}%</span></div>
+          <span class="wp-confidence" style="background:${conf.color}22;color:${conf.color};border:1px solid ${conf.color}55;">${conf.label}</span>
+          <div class="wp-factors">${factors.map(f => `<span>· ${f}</span>`).join("")}</div>`;
+        setTimeout(() => { const bar = document.getElementById("am-wp-bar"); if (bar) bar.style.width = probA + "%"; }, 50);
+      }
+      document.getElementById("am-wp-a").addEventListener("change", renderMatchupModal);
+      document.getElementById("am-wp-b").addEventListener("change", renderMatchupModal);
+
+    } else if (type === "fraud-watch") {
+      icon.textContent  = "🚨";
+      title.textContent = "Fraud Watch";
+      desc.textContent  = "Ranked by Fraud Score — who's overrated?";
+
+      const suspects = players.map(p => {
         const data = calcFraudScore(p.name);
         if (!data) return null;
         return { name: p.name, ...data };
-      })
-      .filter(Boolean)
-      .sort((a, b) => b.fraudScore - a.fraudScore)
-      .slice(0, 4);
+      }).filter(Boolean).sort((a, b) => b.fraudScore - a.fraudScore).slice(0, 4);
 
-    if (suspects.length === 0) {
-      fwResult.innerHTML = `<div class="wp-result-empty">No official matches played yet.</div>`;
-      return;
+      if (suspects.length === 0) {
+        body.innerHTML = `<div class="wp-result-empty">No official matches played yet.</div>`;
+      } else {
+        const medals = ["🥇","🥈","🥉","4️⃣"];
+        const colors  = ["#ff5050","#ff7f50","#ffaa33","var(--muted)"];
+        body.innerHTML = `<div class="fw-header">Ranked by Fraud Score</div>` +
+          suspects.map((s, i) => `
+            <div class="fw-suspect">
+              <span class="fw-rank" style="color:${colors[i]}">${medals[i]}</span>
+              <div class="fw-info">
+                <div class="fw-name">${s.name}</div>
+                <div class="fw-reason">${s.reason}</div>
+              </div>
+              <div class="fw-score-wrap">
+                <span class="fw-score" style="color:${colors[i]}">${s.fraudScore}</span>
+                <span class="fw-label">Fraud Score</span>
+              </div>
+            </div>`).join("");
+      }
+
+    } else if (type === "dominance") {
+      icon.textContent  = "👑";
+      title.textContent = "Dominance Index";
+      desc.textContent  = "Who's actually running the league — ranked by point diff, SOS, and underratedness.";
+
+      function calcDominanceScore(name) {
+        const p = players.find(x => x.name === name);
+        if (!p) return null;
+        const om = matchHistory.filter(m => m.player === name && m.type !== "friendly");
+        if (om.length === 0) return null;
+
+        // 1. Point differential (35%) — large positive diff = dominant
+        const avgS = om.reduce((s, m) => s + m.myScore,  0) / om.length;
+        const avgA = om.reduce((s, m) => s + m.oppScore, 0) / om.length;
+        const pd   = avgS - avgA;
+        // Normalize: +15 or better = 100, -15 or worse = 0
+        const diffScore = Math.round(Math.max(0, Math.min(100, ((pd + 15) / 30) * 100)));
+
+        // 2. Strength of schedule (40%) — dominating tough opponents = elite
+        const oppWR = om.map(m => {
+          const o = players.find(x => x.name === m.opponent);
+          if (!o) return 0.5;
+          const t = o.wins + o.losses;
+          return t > 0 ? o.wins / t : 0.5;
+        });
+        const avgOppWR = oppWR.reduce((s, r) => s + r, 0) / oppWR.length;
+        // High avg opp win rate = tough schedule = more dominant
+        const sosScore = Math.round(avgOppWR * 100);
+
+        // 3. Underratedness (25%) — performing above your ranking = underrated beast
+        const expectedWR = 1 - ((p.ranking - 1) / (players.length - 1));
+        const actualWR   = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0.5;
+        const gap        = actualWR - expectedWR; // positive = outperforming rank
+        const underrated = Math.round(Math.max(0, Math.min(100, gap * 100)));
+
+        const domScore = Math.round((diffScore * 0.35) + (sosScore * 0.40) + (underrated * 0.25));
+
+        const avgOppRank = om.map(m => {
+          const o = players.find(x => x.name === m.opponent);
+          return o ? o.ranking : players.length;
+        }).reduce((s, r) => s + r, 0) / om.length;
+
+        const reasons = [];
+        if (pd > 3)         reasons.push(`+${pd.toFixed(1)} pt diff/game`);
+        if (sosScore > 50)  reasons.push(`Tough SOS (avg opp #${avgOppRank.toFixed(1)})`);
+        if (underrated > 20) reasons.push(`Outperforming rank #${p.ranking}`);
+        if (reasons.length === 0) reasons.push(`Pt diff: ${pd >= 0 ? "+" : ""}${pd.toFixed(1)}/game`);
+
+        return { domScore, reason: reasons.join(" · ") };
+      }
+
+      const elites = players
+        .map(p => { const d = calcDominanceScore(p.name); if (!d) return null; return { name: p.name, ...d }; })
+        .filter(Boolean)
+        .sort((a, b) => b.domScore - a.domScore)
+        .slice(0, 4);
+
+      const crowns = ["👑", "🥈", "🥉", "4️⃣"];
+      const colors = ["gold", "#c0c0c0", "#cd7f32", "var(--muted)"];
+
+      body.innerHTML = elites.length === 0
+        ? `<div style="color:var(--muted);font-size:0.9rem;text-align:center;padding:24px 0;">No official matches played yet.</div>`
+        : `
+          <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--line);">Ranked by Dominance Score</div>
+          ${elites.map((s, i) => `
+            <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);" class="${i === elites.length - 1 ? 'last-dom' : ''}">
+              <span style="font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;color:${colors[i]};width:30px;text-align:center;flex-shrink:0;">${crowns[i]}</span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:0.92rem;font-weight:600;">${s.name}</div>
+                <div style="font-size:0.73rem;color:var(--muted);margin-top:2px;line-height:1.4;">${s.reason}</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${colors[i]};">${s.domScore}</span>
+                <span style="display:block;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Dom. Score</span>
+              </div>
+            </div>`).join("")}
+        `;
+
+      // Remove bottom border on last item
+      const lastEl = body.querySelector(".last-dom");
+      if (lastEl) lastEl.style.borderBottom = "none";
     }
 
-    const medals = ["🥇", "🥈", "🥉", "4️⃣"];
-    const colors  = ["#ff5050", "#ff7f50", "#ffaa33", "var(--muted)"];
+    overlay.classList.add("open");
 
-    fwResult.innerHTML = `<div class="fw-header">Ranked by Fraud Score</div>` +
-      suspects.map((s, i) => `
-        <div class="fw-suspect">
-          <span class="fw-rank" style="color:${colors[i]}">${medals[i]}</span>
-          <div class="fw-info">
-            <div class="fw-name">${s.name}</div>
-            <div class="fw-reason">${s.reason}</div>
-          </div>
-          <div class="fw-score-wrap">
-            <span class="fw-score" style="color:${colors[i]}">${s.fraudScore}</span>
-            <span class="fw-label">Fraud Score</span>
-          </div>
-        </div>`
-      ).join("");
+    // Close on overlay click
+    overlay.onclick = function(e) {
+      if (e.target === overlay) closeAnalyticsModal();
+    };
   }
 
-  renderFW();
+  function closeAnalyticsModal() {
+    document.getElementById("analytics-modal-overlay").classList.remove("open");
+  }
 </script>
 
 <script>
