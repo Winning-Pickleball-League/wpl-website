@@ -1578,7 +1578,7 @@ nav ul li a{
     const momB = streakVal(pB.streak);
     const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.08;
 
-    let rawA = (wrA * 0.35) + (h2hRateA * 0.30) + ((0.5 + momA - momB) * 0.20) + ((0.5 + rankEdgeA) * 0.15);
+    let rawA = (wrA * 0.25) + (h2hRateA * 0.30) + ((0.5 + momA - momB) * 0.15) + ((0.5 + rankEdgeA) * 0.30);
     rawA = Math.max(0.05, Math.min(0.95, rawA));
     const probA = Math.round(rawA * 100);
     const probB = 100 - probA;
@@ -1759,7 +1759,7 @@ nav ul li a{
   renderPS();
 
   // ── FRAUD WATCH ───────────────────────────────────────────────────
-  // Fraud score = weighted combo of poor point differential + weak SOS.
+  // Fraud score = weighted combo of point differential, SOS, and ranking vs record gap.
   // Only players with at least 1 official match are considered.
   // Higher fraud score = bigger fraud.
 
@@ -1770,38 +1770,55 @@ nav ul li a{
     const officialMatches = matchHistory.filter(m => m.player === name && m.type !== "friendly");
     if (officialMatches.length === 0) return null;
 
-    // Point differential per game (negative = giving up more than scoring)
+    // ── 1. POINT DIFFERENTIAL (35%) ──────────────────────────────────
+    // Average points scored minus average points allowed per game.
+    // Large negative diff = high fraud contribution.
     const avgScored  = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
     const avgAllowed = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
     const pointDiff  = avgScored - avgAllowed;
-
-    // Normalize point diff to fraud contribution: large negative diff = high fraud
-    // Cap at ±15, invert so negative diff = high score (0–100)
+    // Cap at ±15, invert so negative = high fraud (0–100)
     const diffFraud = Math.round(Math.max(0, Math.min(100, ((-pointDiff + 15) / 30) * 100)));
 
-    // SOS fraud: low SOS (easy schedule) = high fraud contribution
-    const maxRanking = players.length;
-    const oppRankings = officialMatches.map(m => {
+    // ── 2. STRENGTH OF SCHEDULE (40%) ────────────────────────────────
+    // Uses opponent win % instead of ranking for more accurate SOS.
+    // Beating players with low win % = weak schedule = more fraudulent.
+    const oppWinRates = officialMatches.map(m => {
       const opp = players.find(x => x.name === m.opponent);
-      return opp ? opp.ranking : maxRanking;
+      if (!opp) return 0.5;
+      const oppTotal = opp.wins + opp.losses;
+      return oppTotal > 0 ? opp.wins / oppTotal : 0.5;
     });
-    const avgOppRank = oppRankings.reduce((s, r) => s + r, 0) / oppRankings.length;
-    // High avg opp rank = weak opponents = fraud. Normalize to 0–100.
-    const sosFraud = Math.round(((avgOppRank - 1) / (maxRanking - 1)) * 100);
+    const avgOppWinRate = oppWinRates.reduce((s, r) => s + r, 0) / oppWinRates.length;
+    // Low avg opp win rate = weak schedule = high fraud (0–100, inverted)
+    const sosFraud = Math.round((1 - avgOppWinRate) * 100);
 
-    // Win rate: high win rate on weak schedule = more suspicious
-    const winRate = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
+    // ── 3. RANKING VS RECORD GAP (25%) ───────────────────────────────
+    // How overrated are you relative to your actual record?
+    // High ranking + bad record = big gap = fraud.
+    // A #11 ranked player going 0-1 is expected. A #1 going 0-3 is a fraud.
+    const expectedWinRate = 1 - ((p.ranking - 1) / (players.length - 1));
+    const actualWinRate   = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0.5;
+    const gap = expectedWinRate - actualWinRate;
+    // Normalize gap to 0–100 (only positive gap = overrated = fraud)
+    const overratedness = Math.round(Math.max(0, Math.min(100, gap * 100)));
 
-    // Weighted: point diff 45%, SOS 35%, win rate on easy schedule 20%
-    const fraudScore = Math.round((diffFraud * 0.45) + (sosFraud * 0.35) + (winRate * 20));
+    // ── FINAL SCORE ───────────────────────────────────────────────────
+    // Point diff: 35%, SOS: 40%, Ranking vs record gap: 25%
+    const fraudScore = Math.round((diffFraud * 0.35) + (sosFraud * 0.40) + (overratedness * 0.25));
+
+    // ── REASON TAGS ───────────────────────────────────────────────────
+    const avgOppRankDisplay = officialMatches.map(m => {
+      const opp = players.find(x => x.name === m.opponent);
+      return opp ? opp.ranking : players.length;
+    }).reduce((s, r) => s + r, 0) / officialMatches.length;
 
     const reasons = [];
-    if (pointDiff < 0)    reasons.push(`${pointDiff.toFixed(1)} pt diff/game`);
-    if (sosFraud > 50)    reasons.push(`Weak SOS (avg opp #${avgOppRank.toFixed(1)})`);
-    if (diffFraud < 40 && winRate > 0.5) reasons.push(`Wins not convincing`);
+    if (pointDiff < 0)       reasons.push(`${pointDiff.toFixed(1)} pt diff/game`);
+    if (sosFraud > 55)       reasons.push(`Weak SOS (avg opp #${avgOppRankDisplay.toFixed(1)})`);
+    if (overratedness > 30)  reasons.push(`Ranked #${p.ranking} but ${p.wins}-${p.losses}`);
     if (reasons.length === 0) reasons.push(`Pt diff: +${pointDiff.toFixed(1)}/game`);
 
-    return { fraudScore, reason: reasons.join(" · "), pointDiff, winRate };
+    return { fraudScore, reason: reasons.join(" · "), pointDiff, actualWinRate };
   }
 
   function renderFW() {
