@@ -289,6 +289,47 @@ section{
 }
 @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.2;} }
 
+/* ── STANDINGS CARD FLUSH HEADER ── */
+.standings-card{
+    background:var(--surface);
+    padding:0;
+    border-radius:12px;
+    border:1px solid var(--line2);
+    overflow:hidden;
+}
+
+.standings-card .table-scroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+.standings-card thead tr{
+    background:rgba(249,196,210,0.07);
+    border-bottom:1px solid var(--line);
+}
+
+.standings-card th{
+    padding:16px 16px;
+}
+
+.standings-card td{
+    padding:16px;
+}
+
+.standings-card tbody tr:last-child td{
+    border-bottom:none;
+}
+
+.standings-card table{
+    margin:0;
+}
+
+/* Override border-left on top 3 rows to use box-shadow instead so it's not clipped */
+.standings-card tbody tr[style*="border-left"]{
+    box-shadow:inset 4px 0 0 0 currentColor;
+    border-left:none !important;
+}
+
 /* ── CARD ── */
 .card{
     background:var(--surface);
@@ -332,7 +373,7 @@ tbody tr{
 tbody tr:hover{ background:rgba(255,255,255,0.02); }
 
 .row-gold td{ color:var(--gold) !important; }
-.row-gold{ border-left:3px solid var(--gold) !important; }
+.row-gold{ box-shadow:inset 4px 0 0 0 rgba(249,196,210,0.9) !important; }
 
 /* ── RANKINGS ── */
 .rank-item{
@@ -1216,7 +1257,7 @@ footer{ flex-direction:column; text-align:center; }
   <span class="section-tag">Season 1</span>
 </div>
 
-<div class="card">
+<div class="standings-card">
 <div class="table-scroll">
 <table>
 <thead>
@@ -1468,9 +1509,9 @@ footer{ flex-direction:column; text-align:center; }
       ? Math.round(p.pct * 100) + "%" : "0%";
 
     let borderStyle = "";
-    if (rank === 1) borderStyle = "border-left:4px solid rgba(212,175,55,0.8);";
-    else if (rank === 2) borderStyle = "border-left:4px solid rgba(180,180,180,0.7);";
-    else if (rank === 3) borderStyle = "border-left:4px solid rgba(140,100,60,0.8);";
+    if (rank === 1) borderStyle = "box-shadow:inset 4px 0 0 0 rgba(249,196,210,0.9);";
+    else if (rank === 2) borderStyle = "box-shadow:inset 4px 0 0 0 rgba(180,180,180,0.7);";
+    else if (rank === 3) borderStyle = "box-shadow:inset 4px 0 0 0 rgba(140,100,60,0.8);";
 
     const tr = document.createElement("tr");
     if (rank === 1) tr.className = "row-gold";
