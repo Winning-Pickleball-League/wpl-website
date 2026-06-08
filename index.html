@@ -1799,32 +1799,32 @@ footer{ flex-direction:column; text-align:center; }
     {
       winner: "Larin D", loser: "Seth C", score: "13 — 4", type: "official",
       prob: { winner: 52, loser: 48 },
-      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 4 }
+      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 4, entertainment: 5 }
     },
     {
       winner: "Seth C", loser: "Hunter P", score: "15 — 11", type: "official",
       prob: { winner: 52, loser: 48 },
-      mqs: { leadChanges: 7, closeness: 7, upsetFactor: 5 }
+      mqs: { leadChanges: 7, closeness: 7, upsetFactor: 5, entertainment: 7 }
     },
     {
     winner: "Parker G", loser: "Larin D", score: "15 — 12", type: "official",
       prob: { winner: 55, loser: 45 },
-      mqs: { leadChanges: 4, closeness: 7, upsetFactor: 6 }
+      mqs: { leadChanges: 4, closeness: 7, upsetFactor: 6, entertainment: 8 }
     },
     {
     winner: "Larin D", loser: "Ansh J", score: "15 — 7", type: "official",
       prob: { winner: 49, loser: 51 },
-      mqs: { leadChanges: 5, closeness: 5, upsetFactor: 4 }
+      mqs: { leadChanges: 5, closeness: 5, upsetFactor: 4, entertainment: 5 }
     },
     {
     winner: "Larin D", loser: "Anthony A", score: "15 — 11", type: "official",
       prob: { winner: 51, loser: 49 },
-      mqs: { leadChanges: 5, closeness: 7, upsetFactor: 7 }
+      mqs: { leadChanges: 5, closeness: 7, upsetFactor: 7, entertainment: 7 }
     },
     {
     winner: "Parker G", loser: "Hunter P", score: "15 — 5", type: "official",
       prob: { winner: 58, loser: 42 },
-      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 4 }
+      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 4, entertainment: 3 }
     },
   ];
   // ──────────────────────────────────────────────────────────────────
@@ -2312,8 +2312,9 @@ footer{ flex-direction:column; text-align:center; }
     let mqsHTML = "";
 
     if (m.mqs) {
-      const { leadChanges, closeness, upsetFactor } = m.mqs;
-      const avg   = (leadChanges + closeness + upsetFactor) / 3;
+      const { leadChanges, closeness, upsetFactor, entertainment } = m.mqs;
+      const count = entertainment !== undefined ? 4 : 3;
+      const avg   = (leadChanges + closeness + upsetFactor + (entertainment ?? 0)) / count;
       const score = Math.round(avg * 10) / 10;
       const tier  = mqsTier(score);
       const pct   = (score / 10 * 100).toFixed(1);
@@ -2322,11 +2323,6 @@ footer{ flex-direction:column; text-align:center; }
         <div class="mqs-embed">
           <span class="mqs-embed-score">⚡ MQS: ${score}/10</span>
           <span class="mqs-embed-badge" style="color:${tier.color}; border-color:${tier.color};">${tier.label}</span>
-          <div class="mqs-embed-breakdown">
-            Lead Changes: <b>${leadChanges}</b> &nbsp;·&nbsp;
-            Closeness: <b>${closeness}</b> &nbsp;·&nbsp;
-            Upset Factor: <b>${upsetFactor}</b>
-          </div>
           <div class="mqs-embed-bar-wrap">
             <div class="mqs-embed-bar-fill" style="width:${pct}%; background:${tier.color};"></div>
           </div>
