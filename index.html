@@ -1845,31 +1845,13 @@ footer{ flex-direction:column; text-align:center; }
     const pB = players.find(p => p.name === nameB);
     if (!pA || !pB) return null;
 
-    const wrA = (pA.wins + pA.losses) > 0 ? pA.wins / (pA.wins + pA.losses) : 0.5;
-    const wrB = (pB.wins + pB.losses) > 0 ? pB.wins / (pB.wins + pB.losses) : 0.5;
-    const wrEdge = 0.5 + ((wrA - wrB) * 0.20);
-
-    const h2hA = matchHistory.filter(m => m.player === nameA && m.opponent === nameB && m.type === "win").length;
-    const h2hB = matchHistory.filter(m => m.player === nameB && m.opponent === nameA && m.type === "win").length;
-    const h2hTotal = h2hA + h2hB;
-    const h2hRateA = h2hTotal > 0 ? h2hA / h2hTotal : 0.5;
-    const h2hEdge = 0.5 + ((h2hRateA - 0.5) * 0.25);
-
-    const rankEdgeA = ((pB.ranking - pA.ranking) / players.length) * 0.25;
-    const rankEdge = 0.5 + rankEdgeA;
-
     const matchesA = matchHistory.filter(m => m.player === nameA && m.type !== "friendly");
     const matchesB = matchHistory.filter(m => m.player === nameB && m.type !== "friendly");
-    const avgDiffA = matchesA.length > 0
-      ? matchesA.reduce((s, m) => s + (cappedScore(m.myScore) - cappedScore(m.oppScore)), 0) / matchesA.length : 0;
-    const avgDiffB = matchesB.length > 0
-      ? matchesB.reduce((s, m) => s + (cappedScore(m.myScore) - cappedScore(m.oppScore)), 0) / matchesB.length : 0;
-    const diffEdge = 0.5 + (Math.max(-15, Math.min(15, avgDiffA - avgDiffB)) / 15) * 0.15;
 
-    function avgOppWinRate(name) {
-      const ms = matchHistory.filter(m => m.player === name && m.type !== "friendly");
-      if (ms.length === 0) return 0.5;
-      const rates = ms.map(m => {
+    // ── HELPER: avg opponent win rate ─────────────────────────────────
+    function avgOppWR(matches) {
+      if (matches.length === 0) return 0.5;
+      const rates = matches.map(m => {
         const opp = players.find(x => x.name === m.opponent);
         if (!opp) return 0.5;
         const t = opp.wins + opp.losses;
@@ -1877,40 +1859,101 @@ footer{ flex-direction:column; text-align:center; }
       });
       return rates.reduce((s, r) => s + r, 0) / rates.length;
     }
-    const sosA = avgOppWinRate(nameA);
-    const sosB = avgOppWinRate(nameB);
-    const sosEdge = 0.5 + ((sosA - sosB) * 0.10);
 
+    // ── FIX 4: MOMENTUM — strip emojis, parse W/L number cleanly ─────
     function streakVal(streak) {
-      const m = streak.match(/([WL])(\d+)/);
+      if (!streak) return 0;
+      const clean = streak.replace(/[^\w\s]/gi, "").trim(); // strip emojis
+      const m = clean.match(/([WL])(\d+)/i);
       if (!m) return 0;
-      const mag = Math.min(parseInt(m[2]), 4) * 0.0125;
-      return m[1] === "W" ? mag : -mag;
+      const mag = Math.min(parseInt(m[2]), 4) / 4; // 0 → 1 scale, capped at 4
+      return m[1].toUpperCase() === "W" ? mag : -mag;
     }
+
+    // ── FIX 1: SOS-ADJUSTED WIN RATE (30%) ───────────────────────────
+    // Weight each win/loss by opponent quality. Win vs strong opp = more credit.
+    function sosAdjustedWR(matches) {
+      if (matches.length === 0) return 0.5;
+      let weightedWins = 0, totalWeight = 0;
+      matches.forEach(m => {
+        const opp = players.find(x => x.name === m.opponent);
+        const oppWR = opp ? (opp.wins + opp.losses > 0 ? opp.wins / (opp.wins + opp.losses) : 0.5) : 0.5;
+        const weight = 0.5 + oppWR; // stronger opponent = higher weight (0.5–1.5)
+        totalWeight += weight;
+        if (m.type === "win") weightedWins += weight;
+      });
+      return totalWeight > 0 ? weightedWins / totalWeight : 0.5;
+    }
+    const sosWrA = sosAdjustedWR(matchesA);
+    const sosWrB = sosAdjustedWR(matchesB);
+    const wrEdge = 0.5 + ((sosWrA - sosWrB) * 0.5); // scale diff to meaningful edge
+
+    // ── FIX 2: SOS-ADJUSTED POINT DIFF (20%) ─────────────────────────
+    // Scale raw point diff by SOS multiplier — good diff vs tough opponents matters more
+    const sosA = avgOppWR(matchesA);
+    const sosB = avgOppWR(matchesB);
+    const avgDiffA = matchesA.length > 0
+      ? matchesA.reduce((s, m) => s + (cappedScore(m.myScore) - cappedScore(m.oppScore)), 0) / matchesA.length : 0;
+    const avgDiffB = matchesB.length > 0
+      ? matchesB.reduce((s, m) => s + (cappedScore(m.myScore) - cappedScore(m.oppScore)), 0) / matchesB.length : 0;
+    const adjDiffA = avgDiffA * (0.5 + sosA); // tough SOS amplifies diff
+    const adjDiffB = avgDiffB * (0.5 + sosB);
+    const diffEdge = 0.5 + (Math.max(-20, Math.min(20, adjDiffA - adjDiffB)) / 20) * 0.5;
+
+    // ── POWER RANKING (25%) ───────────────────────────────────────────
+    // Non-linear: gap at the top matters more than at the bottom
+    const rankGap = pB.ranking - pA.ranking; // positive = A is higher ranked
+    const nonLinearEdge = Math.sign(rankGap) * Math.pow(Math.abs(rankGap) / players.length, 0.7);
+    const rankEdge = 0.5 + (nonLinearEdge * 0.5);
+
+    // ── FIX 3: H2H SCALED BY SAMPLE SIZE (20%) ───────────────────────
+    // Official games = 1.0 weight, friendlies = 0.3 weight
+    // Confidence scales: 0 games = no signal, 1 = half, 2+ = full
+    const h2hA = matchHistory.filter(m => m.player === nameA && m.opponent === nameB && m.type === "win").length;
+    const h2hB = matchHistory.filter(m => m.player === nameB && m.opponent === nameA && m.type === "win").length;
+    const h2hFriendlyA = matchHistory.filter(m => m.player === nameA && m.opponent === nameB && m.type === "friendly").length;
+    const h2hFriendlyB = matchHistory.filter(m => m.player === nameB && m.opponent === nameA && m.type === "friendly").length;
+
+    const weightedWinsA  = h2hA + (h2hFriendlyA * 0.3);
+    const weightedWinsB  = h2hB + (h2hFriendlyB * 0.3);
+    const weightedTotal  = weightedWinsA + weightedWinsB;
+    const h2hRateA       = weightedTotal > 0 ? weightedWinsA / weightedTotal : 0.5;
+    const h2hConfidence  = weightedTotal === 0 ? 0 : weightedTotal < 1 ? weightedTotal : Math.min(1, weightedTotal / 2);
+    const h2hEdge        = 0.5 + ((h2hRateA - 0.5) * h2hConfidence);
+
+    const h2hTotal = h2hA + h2hB; // official only, for display
+
+    // ── FIX 4: MOMENTUM (5%) ─────────────────────────────────────────
     const momA = streakVal(pA.streak);
     const momB = streakVal(pB.streak);
-    const momEdge = 0.5 + (momA - momB);
+    const momDiff = Math.max(-0.5, Math.min(0.5, momA - momB));
+    const momEdge = 0.5 + (momDiff * 0.5);
 
-    let rawA = ((wrEdge   - 0.5) * 0.20) +
-               ((h2hEdge  - 0.5) * 0.25) +
+    // ── FINAL WEIGHTED COMBINATION ────────────────────────────────────
+    let rawA = ((wrEdge   - 0.5) * 0.30) +
+               ((diffEdge - 0.5) * 0.20) +
                ((rankEdge - 0.5) * 0.25) +
-               ((diffEdge - 0.5) * 0.15) +
-               ((sosEdge  - 0.5) * 0.10) +
+               ((h2hEdge  - 0.5) * 0.20) +
                ((momEdge  - 0.5) * 0.05);
     rawA = 0.5 + rawA;
     rawA = Math.max(0.05, Math.min(0.95, rawA));
     const probA = Math.round(rawA * 100);
     const probB = 100 - probA;
 
+    // ── FACTOR DISPLAY ────────────────────────────────────────────────
+    const sosWrADisplay = Math.round(sosWrA * 100);
+    const sosWrBDisplay = Math.round(sosWrB * 100);
+
     return {
       probA, probB,
       factors: [
-        `Overall record: ${pA.wins}-${pA.losses} vs ${pB.wins}-${pB.losses}`,
-        h2hTotal > 0 ? `Head-to-head: ${nameA.split(" ")[0]} ${h2hA}-${h2hB} ${nameB.split(" ")[0]}` : `Head-to-head: No official matches`,
-        `Avg pt diff: ${avgDiffA >= 0 ? "+" : ""}${avgDiffA.toFixed(1)} vs ${avgDiffB >= 0 ? "+" : ""}${avgDiffB.toFixed(1)}`,
-        `SOS: ${(sosA * 100).toFixed(0)}% vs ${(sosB * 100).toFixed(0)}% avg opp win rate`,
-        `Streak: ${pA.streak || "—"} vs ${pB.streak || "—"}`,
+        `SOS-adj win rate: ${sosWrADisplay}% vs ${sosWrBDisplay}%`,
+        `SOS-adj pt diff: ${adjDiffA >= 0 ? "+" : ""}${adjDiffA.toFixed(1)} vs ${adjDiffB >= 0 ? "+" : ""}${adjDiffB.toFixed(1)}`,
         `Power ranking: #${pA.ranking} vs #${pB.ranking}`,
+        h2hTotal > 0 || weightedTotal > 0
+          ? `H2H: ${nameA.split(" ")[0]} ${h2hA}-${h2hB}${(h2hFriendlyA + h2hFriendlyB) > 0 ? ` + ${h2hFriendlyA+h2hFriendlyB} friendly` : ""} (${weightedTotal < 1 ? "low sample" : weightedTotal < 2 ? "½ weight" : "full weight"})`
+          : `H2H: No matches yet`,
+        `Streak: ${pA.streak || "—"} vs ${pB.streak || "—"}`,
       ]
     };
   }
