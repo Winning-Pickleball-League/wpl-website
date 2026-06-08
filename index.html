@@ -1243,7 +1243,7 @@ footer{ flex-direction:column; text-align:center; }
 <div class="hero-right">
   <div class="hero-stat-block" id="hero-stats">
     <div class="hero-stat"><span class="hero-stat-num" id="hs-players">12</span><span class="hero-stat-label">Players</span></div>
-    <div class="hero-stat"><span class="hero-stat-num" id="hs-matches">3</span><span class="hero-stat-label">Matches</span></div>
+    <div class="hero-stat"><span class="hero-stat-num" id="hs-matches">—</span><span class="hero-stat-label">Matches</span></div>
     <div class="hero-stat"><span class="hero-stat-num" id="hs-pts">0</span><span class="hero-stat-label">Points Scored</span></div>
     <div class="hero-stat"><span class="hero-stat-num" id="hs-winpct">—</span><span class="hero-stat-label">Avg Win Margin</span></div>
   </div>
@@ -1281,20 +1281,21 @@ footer{ flex-direction:column; text-align:center; }
 
 <div class="card">
 <div class="rank-item"><span>#1 Parker G</span><span>—</span></div>
-<div class="rank-item"><span>#2 Grady B</span><span>—</span></div>
-<div class="rank-item"><span>#3 Ansh J</span><span>—</span></div>
-<div class="rank-item"><span>#4 Larin D</span><span style="color:green">▲1</span></div>
-<div class="rank-item"><span>#5 Anthony A</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#2 Larin D</span><span style="color:green">▲2</span></div>
+<div class="rank-item"><span>#3 Grady B</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#4 Ansh J</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#5 Anthony A</span><span>—</span></div>
 
 <details>
 <summary>Show More</summary>
-<div class="rank-item"><span>#6 Monson </span><span style="color:green">▲6</span></div>
-<div class="rank-item"><span>#7 Seth C</span><span style="color:red">▼3</span></div>
-<div class="rank-item"><span>#8 Kaili G</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#9 Isaac T</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#10 Amir A</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#11 Hunter P</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#12 Zaeem N</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#6 Monson</span><span>—</span></div>
+<div class="rank-item"><span>#7 Seth C</span><span>—</span></div>
+<div class="rank-item"><span>#8 Kaili G</span><span>—</span></div>
+<div class="rank-item"><span>#9 Isaac T</span><span>—</span></div>
+<div class="rank-item"><span>#10 Hunter P</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#11 Amir A</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#12 Zaeem N</span><span>—</span></div>
+<div class="rank-item"><span>#13 Jace M</span><span>NEW</span></div>
 </details>
 </div>
 </section>
@@ -1427,17 +1428,18 @@ footer{ flex-direction:column; text-align:center; }
   // streak: '🔥 W2' for win streak, '🧊 L2' for loss streak, '—' for none
   // ranking: power ranking number
   const players = [
-    { name: "Parker G",  wins: 1, losses: 0, streak: "W1",  ranking: 1  },
-    { name: "Grady B",   wins: 0, losses: 0, streak: "—",  ranking: 2  },
-    { name: "Ansh J",    wins: 1, losses: 1, streak: "L1", ranking: 3  },
-    { name: "Seth C",    wins: 0, losses: 0, streak: "—",  ranking: 7  },
-    { name: "Larin D",   wins: 0, losses: 0, streak: "—",  ranking: 4  },
+    { name: "Parker G",  wins: 3, losses: 0, streak: "🔥 W3",  ranking: 1  },
+    { name: "Grady B",   wins: 0, losses: 0, streak: "—",  ranking: 3  },
+    { name: "Ansh J",    wins: 1, losses: 2, streak: "🧊 L2", ranking: 4  },
+    { name: "Seth C",    wins: 1, losses: 1, streak: "W1",  ranking: 7  },
+    { name: "Larin D",   wins: 3, losses: 1, streak: "🔥 W2",  ranking: 2  },
     { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 9  },
-    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 10  },
+    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 11  },
     { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 8  },
     { name: "Zaeem N",   wins: 0, losses: 0, streak: "—",  ranking: 12  },
-    { name: "Hunter P",  wins: 0, losses: 0, streak: "—",  ranking: 11 },
-    { name: "Anthony A", wins: 1, losses: 1, streak: "W1", ranking: 5 },
+    { name: "Hunter P",  wins: 0, losses: 2, streak: "🧊 L2",  ranking: 10 },
+    { name: "Jace M",    wins: 0, losses: 0, streak: "—",  ranking: 13 },
+    { name: "Anthony A", wins: 1, losses: 2, streak: "L1", ranking: 5 },
     { name: "Monson K",  wins: 0, losses: 1, streak: "L1",  ranking: 6 },
   ];
 
@@ -1455,6 +1457,22 @@ footer{ flex-direction:column; text-align:center; }
     { player: "Ansh J",    type: "loss", opponent: "Parker G",  myScore: 7,  oppScore: 15,  date: "June 5, 2026" },
     { player: "Anthony A",    type: "win", opponent: "Monson K",  myScore: 15,  oppScore: 12,  date: "June 5, 2026" },
     { player: "Monson K",    type: "loss", opponent: "Anthony A",  myScore: 12,  oppScore: 15,  date: "June 5, 2026" },
+    { player: "Larin D",    type: "win", opponent: "Seth C",  myScore: 13,  oppScore: 4,  date: "June 7, 2026" },
+    { player: "Seth C",    type: "loss", opponent: "Larin D",  myScore: 4,  oppScore: 13,  date: "June 7, 2026" },
+    { player: "Seth C",    type: "win", opponent: "Hunter P",  myScore: 15,  oppScore: 11,  date: "June 7, 2026" },
+    { player: "Hunter P",    type: "loss", opponent: "Seth C",  myScore: 11,  oppScore: 15,  date: "June 7, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Hunter P",  myScore: 15,  oppScore: 5,  date: "June 7, 2026" },
+    { player: "Hunter P",    type: "loss", opponent: "Parker G",  myScore: 5,  oppScore: 15,  date: "June 7, 2026" },
+    { player: "Anthony A",    type: "loss", opponent: "Larin D",  myScore: 11,  oppScore: 15,  date: "June 7, 2026" },
+    { player: "Larin D",    type: "win", opponent: "Anthony A",  myScore: 15,  oppScore: 11,  date: "June 7, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Larin D",  myScore: 15,  oppScore: 12,  date: "June 7, 2026" },
+    { player: "Larin D",    type: "loss", opponent: "Parker G",  myScore: 12,  oppScore: 15,  date: "June 7, 2026" },
+    { player: "Larin D",    type: "win", opponent: "Ansh J",  myScore: 15,  oppScore: 7,  date: "June 7, 2026" },
+    { player: "Ansh J",    type: "loss", opponent: "Larin D",  myScore: 7,  oppScore: 15,  date: "June 7, 2026" },
+    { player: "Parker G",    type: "friendly", opponent: "Anthony A",  myScore: 7,  oppScore: 1,  date: "June 7, 2026" },
+    { player: "Anthony A",    type: "friendly", opponent: "Parker G",  myScore: 1,  oppScore: 7,  date: "June 7, 2026" },
+   
+
   ];
   // ──────────────────────────────────────────────────────────────────
 
@@ -1491,6 +1509,9 @@ footer{ flex-direction:column; text-align:center; }
   // Auto-populate hero stats
   const totalPts = players.reduce((s, p) => s + p.points, 0);
 
+  // Total official matches (count wins only since each match has one win entry)
+  const totalMatches = matchHistory.filter(m => m.type === "win").length;
+
   // Average win margin across all official wins
   const officialWins = matchHistory.filter(m => m.type === "win");
   const avgWinMargin = officialWins.length > 0
@@ -1498,6 +1519,7 @@ footer{ flex-direction:column; text-align:center; }
     : null;
 
   document.getElementById("hs-players").textContent = players.length;
+  document.getElementById("hs-matches").textContent = totalMatches;
   document.getElementById("hs-pts").textContent = totalPts;
   document.getElementById("hs-winpct").textContent = avgWinMargin ? `+${avgWinMargin}` : "—";
 
@@ -1775,19 +1797,34 @@ footer{ flex-direction:column; text-align:center; }
   // ─────────────────────────────────────────────────────────────────
   const matchResults = [
     {
-      winner: "Parker G", loser: "Ansh J", score: "15 — 7", type: "official",
+      winner: "Larin D", loser: "Seth C", score: "13 — 4", type: "official",
+      prob: { winner: 52, loser: 48 },
+      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 4 }
+    },
+    {
+      winner: "Seth C", loser: "Hunter P", score: "15 — 11", type: "official",
+      prob: { winner: 52, loser: 48 },
+      mqs: { leadChanges: 7, closeness: 7, upsetFactor: 5 }
+    },
+    {
+    winner: "Parker G", loser: "Larin D", score: "15 — 12", type: "official",
+      prob: { winner: 55, loser: 45 },
+      mqs: { leadChanges: 4, closeness: 7, upsetFactor: 6 }
+    },
+    {
+    winner: "Larin D", loser: "Ansh J", score: "15 — 7", type: "official",
       prob: { winner: 49, loser: 51 },
-      mqs: { leadChanges: 4, closeness: 5, upsetFactor: 4 }
+      mqs: { leadChanges: 5, closeness: 5, upsetFactor: 4 }
     },
     {
-      winner: "Anthony A", loser: "Monson K", score: "15 — 12", type: "official",
-      prob: { winner: 32, loser: 68 },
-      mqs: { leadChanges: 7, closeness: 9, upsetFactor: 4 }
+    winner: "Larin D", loser: "Anthony A", score: "15 — 11", type: "official",
+      prob: { winner: 51, loser: 49 },
+      mqs: { leadChanges: 5, closeness: 7, upsetFactor: 7 }
     },
     {
-    winner: "Ansh J", loser: "Anthony A", score: "15 — 9", type: "official",
-      prob: { winner: 73, loser: 27 },
-      mqs: { leadChanges: 7, closeness: 5, upsetFactor: 6 }
+    winner: "Parker G", loser: "Hunter P", score: "15 — 5", type: "official",
+      prob: { winner: 58, loser: 42 },
+      mqs: { leadChanges: 2, closeness: 3, upsetFactor: 4 }
     },
   ];
   // ──────────────────────────────────────────────────────────────────
@@ -1796,12 +1833,12 @@ footer{ flex-direction:column; text-align:center; }
     if (score >= 8.5) return { label: "🔥 Instant Classic", color: "#f9c4d2"           };
     if (score >= 7)   return { label: "⚡ Great Match",      color: "#00c864"        };
     if (score >= 5)   return { label: "👍 Solid Match",      color: "var(--accent)"  };
-    if (score >= 3)   return { label: "😐 Average",          color: "var(--muted)"   };
+    if (score >= 3.5)   return { label: "😐 Average",          color: "var(--muted)"   };
                       return { label: "💤 Low Intensity",    color: "#ff5050"        };
   }
 
   const matchCard = document.getElementById("match-results-card");
-  document.getElementById("hs-matches").textContent = matchResults.filter(m => m.type === "official").length;
+  // match results section built below
   // ── ADVANCED ANALYTICS: WIN PROBABILITY ─────────────────────────────
   function calcWinProb(nameA, nameB) {
     const pA = players.find(p => p.name === nameA);
@@ -1854,8 +1891,13 @@ footer{ flex-direction:column; text-align:center; }
     const momB = streakVal(pB.streak);
     const momEdge = 0.5 + (momA - momB);
 
-    let rawA = (wrEdge * 0.15) + (h2hEdge * 0.25) + (rankEdge * 0.30) +
-               (diffEdge * 0.20) + (sosEdge * 0.5) + (momEdge * 0.05);
+    let rawA = ((wrEdge   - 0.5) * 0.20) +
+               ((h2hEdge  - 0.5) * 0.25) +
+               ((rankEdge - 0.5) * 0.25) +
+               ((diffEdge - 0.5) * 0.15) +
+               ((sosEdge  - 0.5) * 0.10) +
+               ((momEdge  - 0.5) * 0.05);
+    rawA = 0.5 + rawA;
     rawA = Math.max(0.05, Math.min(0.95, rawA));
     const probA = Math.round(rawA * 100);
     const probB = 100 - probA;
@@ -2095,13 +2137,20 @@ footer{ flex-direction:column; text-align:center; }
         if (!data) return;
         const { probA, probB, factors } = data;
         const conf = wpConfidence(Math.abs(probA - probB));
+        const aWins = probA >= probB;
         result.innerHTML = `
-          <div class="wp-matchup-names"><span class="wp-name-a">${a}</span><span class="wp-name-b">${b}</span></div>
-          <div class="wp-bar-wrap"><div class="wp-bar-fill" id="am-wp-bar" style="width:0%"></div></div>
-          <div class="wp-pcts"><span class="wp-pct-a">${probA}%</span><span class="wp-pct-b">${probB}%</span></div>
+          <div class="wp-matchup-names">
+            <span class="wp-name-a" style="color:${aWins ? 'var(--accent)' : 'var(--muted)'}">${a}</span>
+            <span class="wp-name-b" style="color:${!aWins ? 'var(--accent)' : 'var(--muted)'}">${b}</span>
+          </div>
+          <div class="wp-bar-wrap"><div class="wp-bar-fill" id="am-wp-bar" style="width:0%; ${!aWins ? 'margin-left:auto; background:var(--accent);' : ''}"></div></div>
+          <div class="wp-pcts">
+            <span class="wp-pct-a" style="color:${aWins ? 'var(--accent)' : 'var(--muted)'}; font-weight:${aWins ? '700' : '400'}">${probA}%</span>
+            <span class="wp-pct-b" style="color:${!aWins ? 'var(--accent)' : 'var(--muted)'}; font-weight:${!aWins ? '700' : '400'}">${probB}%</span>
+          </div>
           <span class="wp-confidence" style="background:${conf.color}22;color:${conf.color};border:1px solid ${conf.color}55;">${conf.label}</span>
           <div class="wp-factors">${factors.map(f => `<span>· ${f}</span>`).join("")}</div>`;
-        setTimeout(() => { const bar = document.getElementById("am-wp-bar"); if (bar) bar.style.width = probA + "%"; }, 50);
+        setTimeout(() => { const bar = document.getElementById("am-wp-bar"); if (bar) bar.style.width = (aWins ? probA : probB) + "%"; }, 50);
       }
       document.getElementById("am-wp-a").addEventListener("change", renderMatchupModal);
       document.getElementById("am-wp-b").addEventListener("change", renderMatchupModal);
