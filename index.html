@@ -1979,39 +1979,75 @@ footer{ flex-direction:column; text-align:center; }
     const officialMatches = matchHistory.filter(m => m.player === name && m.type !== "friendly");
     if (officialMatches.length === 0) return null;
 
-    const avgScored  = officialMatches.reduce((s, m) => s + cappedScore(m.myScore),  0) / officialMatches.length;
-    const avgAllowed = officialMatches.reduce((s, m) => s + cappedScore(m.oppScore), 0) / officialMatches.length;
-    const pointDiff  = avgScored - avgAllowed;
-    const diffFraud  = Math.round(Math.max(0, Math.min(100, ((-pointDiff + 15) / 30) * 100)));
+    // ── 1. UPSET LOSSES (40%) ─────────────────────────────────────────
+    // Losses to players ranked BELOW you. The bigger the rank gap, the worse.
+    // e.g. ranked #2 losing to #10 = massive fraud signal
+    const upsetLosses = officialMatches.filter(m => {
+      if (m.type !== "loss") return false;
+      const opp = players.find(x => x.name === m.opponent);
+      return opp && opp.ranking > p.ranking; // opponent ranked lower = upset
+    });
+    const upsetLossScore = Math.min(100, upsetLosses.reduce((s, m) => {
+      const opp = players.find(x => x.name === m.opponent);
+      if (!opp) return s;
+      const rankGap = opp.ranking - p.ranking; // bigger gap = more fraudulent
+      return s + (rankGap / players.length) * 100;
+    }, 0));
 
+    // ── 2. SOS-ADJUSTED POINT DIFF (35%) ─────────────────────────────
+    // Weak point diff against easy opponents = fraud
+    // Good point diff against tough opponents = not fraud
     const oppWinRates = officialMatches.map(m => {
       const opp = players.find(x => x.name === m.opponent);
       if (!opp) return 0.5;
       const t = opp.wins + opp.losses;
       return t > 0 ? opp.wins / t : 0.5;
     });
-    const avgOppWinRate = oppWinRates.reduce((s, r) => s + r, 0) / oppWinRates.length;
-    const sosFraud = Math.round((1 - avgOppWinRate) * 100);
+    const avgOppWR = oppWinRates.reduce((s, r) => s + r, 0) / oppWinRates.length;
+    const sosMultiplier = 0.5 + avgOppWR; // 0.5 (weak opp) → 1.5 (tough opp)
 
-    const expectedWinRate = 1 - ((p.ranking - 1) / (players.length - 1));
-    const actualWinRate   = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0.5;
-    const gap = expectedWinRate - actualWinRate;
-    const overratedness = Math.round(Math.max(0, Math.min(100, gap * 100)));
+    const avgScored  = officialMatches.reduce((s, m) => s + m.myScore,  0) / officialMatches.length;
+    const avgAllowed = officialMatches.reduce((s, m) => s + m.oppScore, 0) / officialMatches.length;
+    const pointDiff  = avgScored - avgAllowed;
+    const adjustedPD = pointDiff / sosMultiplier; // bad diff vs weak opp = more fraudulent
+    // Invert: negative adjusted diff = high fraud score
+    const adjDiffFraud = Math.round(Math.max(0, Math.min(100, ((-adjustedPD + 15) / 30) * 100)));
 
-    const fraudScore = Math.round((diffFraud * 0.35) + (sosFraud * 0.40) + (overratedness * 0.25));
+    // ── 3. RANK VS ACTUAL PERFORMANCE GAP (25%) ──────────────────────
+    // Only penalizes if you're UNDERPERFORMING your rank expectation.
+    // Low-ranked players are expected to lose — this won't flag them.
+    const expectedWR  = 1 - ((p.ranking - 1) / (players.length - 1));
+    const actualWR    = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0.5;
+    const gap         = expectedWinRate => Math.max(0, expectedWinRate - actualWR);
+    const overrated   = Math.round(Math.min(100, gap(expectedWR) * 100));
 
+    const fraudScore = Math.round(
+      (upsetLossScore * 0.40) +
+      (adjDiffFraud   * 0.35) +
+      (overrated       * 0.25)
+    );
+
+    // ── REASON TAGS ──────────────────────────────────────────────────
     const avgOppRankDisplay = officialMatches.map(m => {
       const opp = players.find(x => x.name === m.opponent);
       return opp ? opp.ranking : players.length;
     }).reduce((s, r) => s + r, 0) / officialMatches.length;
 
     const reasons = [];
-    if (pointDiff < 0)       reasons.push(`${pointDiff.toFixed(1)} pt diff/game`);
-    if (sosFraud > 55)       reasons.push(`Weak SOS (avg opp #${avgOppRankDisplay.toFixed(1)})`);
-    if (overratedness > 30)  reasons.push(`Ranked #${p.ranking} but ${p.wins}-${p.losses}`);
-    if (reasons.length === 0) reasons.push(`Pt diff: +${pointDiff.toFixed(1)}/game`);
+    if (upsetLosses.length > 0) {
+      const worst = upsetLosses.reduce((w, m) => {
+        const opp = players.find(x => x.name === m.opponent);
+        const gap = opp ? opp.ranking - p.ranking : 0;
+        return gap > (w.gap || 0) ? { name: m.opponent, gap } : w;
+      }, {});
+      reasons.push(`Lost to #${players.find(x=>x.name===worst.name)?.ranking} (ranked #${p.ranking})`);
+    }
+    if (pointDiff < 0) reasons.push(`${pointDiff.toFixed(1)} pt diff/game`);
+    else if (adjDiffFraud > 55) reasons.push(`Weak margins vs easy SOS`);
+    if (overrated > 30) reasons.push(`Ranked #${p.ranking} but ${p.wins}-${p.losses}`);
+    if (reasons.length === 0) reasons.push(`Performing near expectations`);
 
-    return { fraudScore, reason: reasons.join(" · "), pointDiff, actualWinRate };
+    return { fraudScore, reason: reasons.join(" · "), pointDiff, actualWR };
   }
 
   // ── ESPN LADDER MODAL SYSTEM ──────────────────────────────────────
@@ -2197,14 +2233,9 @@ footer{ flex-direction:column; text-align:center; }
         const om = matchHistory.filter(m => m.player === name && m.type !== "friendly");
         if (om.length === 0) return null;
 
-        // 1. Point differential (35%) — large positive diff = dominant
-        const avgS = om.reduce((s, m) => s + m.myScore,  0) / om.length;
-        const avgA = om.reduce((s, m) => s + m.oppScore, 0) / om.length;
-        const pd   = avgS - avgA;
-        // Normalize: +15 or better = 100, -15 or worse = 0
-        const diffScore = Math.round(Math.max(0, Math.min(100, ((pd + 15) / 30) * 100)));
-
-        // 2. Strength of schedule (40%) — dominating tough opponents = elite
+        // 1. SOS modifier — scales point diff up or down based on opponent quality
+        // avgOppWR of 1.0 = all opponents undefeated → multiplier of 1.5 (max boost)
+        // avgOppWR of 0.0 = all opponents winless   → multiplier of 0.5 (max penalty)
         const oppWR = om.map(m => {
           const o = players.find(x => x.name === m.opponent);
           if (!o) return 0.5;
@@ -2212,16 +2243,27 @@ footer{ flex-direction:column; text-align:center; }
           return t > 0 ? o.wins / t : 0.5;
         });
         const avgOppWR = oppWR.reduce((s, r) => s + r, 0) / oppWR.length;
-        // High avg opp win rate = tough schedule = more dominant
-        const sosScore = Math.round(avgOppWR * 100);
+        const sosMultiplier = 0.5 + avgOppWR; // range: 0.5 – 1.5
 
-        // 3. Underratedness (25%) — performing above your ranking = underrated beast
+        // 2. Raw point diff, then scale it by SOS multiplier
+        const avgS = om.reduce((s, m) => s + m.myScore,  0) / om.length;
+        const avgA = om.reduce((s, m) => s + m.oppScore, 0) / om.length;
+        const pd   = avgS - avgA;
+        const adjustedPD = pd * sosMultiplier;
+        // Normalize adjusted diff to 0–100 (cap at ±20 after adjustment)
+        const adjDiffScore = Math.round(Math.max(0, Math.min(100, ((adjustedPD + 20) / 40) * 100)));
+
+        // 3. Win rate — explicit, direct credit for winning
+        const actualWR = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
+        const winRateScore = Math.round(actualWR * 100);
+
+        // 4. Underratedness — outperforming your power ranking
         const expectedWR = 1 - ((p.ranking - 1) / (players.length - 1));
-        const actualWR   = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0.5;
-        const gap        = actualWR - expectedWR; // positive = outperforming rank
+        const gap        = actualWR - expectedWR;
         const underrated = Math.round(Math.max(0, Math.min(100, gap * 100)));
 
-        const domScore = Math.round((diffScore * 0.35) + (sosScore * 0.40) + (underrated * 0.25));
+        // Final: SOS-adjusted diff 50%, win rate 30%, underratedness 20%
+        const domScore = Math.round((adjDiffScore * 0.50) + (winRateScore * 0.30) + (underrated * 0.20));
 
         const avgOppRank = om.map(m => {
           const o = players.find(x => x.name === m.opponent);
@@ -2229,9 +2271,10 @@ footer{ flex-direction:column; text-align:center; }
         }).reduce((s, r) => s + r, 0) / om.length;
 
         const reasons = [];
-        if (pd > 3)         reasons.push(`+${pd.toFixed(1)} pt diff/game`);
-        if (sosScore > 50)  reasons.push(`Tough SOS (avg opp #${avgOppRank.toFixed(1)})`);
+        if (pd > 0)          reasons.push(`+${pd.toFixed(1)} pt diff/game`);
+        if (avgOppWR > 0.45) reasons.push(`Tough SOS (avg opp #${avgOppRank.toFixed(1)})`);
         if (underrated > 20) reasons.push(`Outperforming rank #${p.ranking}`);
+        if (actualWR === 1 && p.wins > 0) reasons.push(`Undefeated`);
         if (reasons.length === 0) reasons.push(`Pt diff: ${pd >= 0 ? "+" : ""}${pd.toFixed(1)}/game`);
 
         return { domScore, reason: reasons.join(" · ") };
