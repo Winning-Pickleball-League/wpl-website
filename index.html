@@ -1281,22 +1281,23 @@ footer{ flex-direction:column; text-align:center; }
 
 <div class="card">
 <div class="rank-item"><span>#1 Parker G</span><span>—</span></div>
-<div class="rank-item"><span>#2 Larin D</span><span style="color:green">▲2</span></div>
-<div class="rank-item"><span>#3 Grady B</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#4 Ansh J</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#5 Anthony A</span><span>—</span></div>
+<div class="rank-item"><span>#2 Larin D</span><span>—</span></div>
+<div class="rank-item"><span>#3 Ansh J</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#4 Anthony A</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#5 Monson K</span><span style="color:green">▲1</span></div>
 
 <details>
 <summary>Show More</summary>
-<div class="rank-item"><span>#6 Monson</span><span>—</span></div>
-<div class="rank-item"><span>#7 Seth C</span><span>—</span></div>
-<div class="rank-item"><span>#8 Kaili G</span><span>—</span></div>
-<div class="rank-item"><span>#9 Isaac T</span><span>—</span></div>
-<div class="rank-item"><span>#10 Hunter P</span><span style="color:green">▲1</span></div>
-<div class="rank-item"><span>#11 Amir A</span><span style="color:red">▼1</span></div>
-<div class="rank-item"><span>#12 Zaeem N</span><span>—</span></div>
-<div class="rank-item"><span>#13 Aryaman G</span><span>NEW</span></div>
-<div class="rank-item"><span>#14 Jace M</span><span>NEW</span></div>
+<div class="rank-item"><span>#6 Seth C</span><span style="color:green">▲1</span></div>
+<div class="rank-item"><span>#7 Grady B</span><span style="color:red">▼4</span></div>
+<div class="rank-item"><span>#8 Hunter P</span><span style="color:green">▲2</span></div>
+<div class="rank-item"><span>#9 Hilson K</span><span>NEW</span></div>
+<div class="rank-item"><span>#10 Kaili G</span><span style="color:red">▼2</span></div>
+<div class="rank-item"><span>#11 Amir A</span><span>—</span></div>
+<div class="rank-item"><span>#12 Isaac T</span><span style="color:red">▼3</span></div>
+<div class="rank-item"><span>#13 Zaeem N</span><span style="color:red">▼1</span></div>
+<div class="rank-item"><span>#14 Aryaman G</span><span>NEW</span></div>
+<div class="rank-item"><span>#15 Jace M</span><span>NEW</span></div>
 </details>
 </div>
 </section>
@@ -1429,20 +1430,21 @@ footer{ flex-direction:column; text-align:center; }
   // streak: '🔥 W2' for win streak, '🧊 L2' for loss streak, '—' for none
   // ranking: power ranking number
   const players = [
-    { name: "Parker G",  wins: 3, losses: 0, streak: "🔥 W3",  ranking: 1  },
-    { name: "Grady B",   wins: 0, losses: 0, streak: "—",  ranking: 3  },
-    { name: "Ansh J",    wins: 1, losses: 2, streak: "🧊 L2", ranking: 4  },
-    { name: "Seth C",    wins: 1, losses: 1, streak: "W1",  ranking: 7  },
-    { name: "Larin D",   wins: 3, losses: 1, streak: "🔥 W2",  ranking: 2  },
-    { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 9  },
-    { name: "Amir A",    wins: 0, losses: 0, streak: "—",  ranking: 11  },
-    { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 8  },
-    { name: "Zaeem N",   wins: 0, losses: 0, streak: "—",  ranking: 12  },
-    { name: "Hunter P",  wins: 0, losses: 2, streak: "🧊 L2",  ranking: 10 },
-    { name: "Jace M",      wins: 0, losses: 0, streak: "—", ranking: 14 },
-    { name: "Aryaman G",  wins: 0, losses: 0, streak: "—", ranking: 13 },
-    { name: "Anthony A", wins: 1, losses: 2, streak: "L1", ranking: 5 },
-    { name: "Monson K",  wins: 0, losses: 1, streak: "L1",  ranking: 6 },
+    { name: "Parker G",  wins: 7, losses: 0, streak: "🔥 W7",  ranking: 1  },
+    { name: "Grady B",   wins: 0, losses: 4, streak: "🧊 L4",  ranking: 7  },
+    { name: "Ansh J",    wins: 4, losses: 2, streak: "🔥  W3", ranking: 3  },
+    { name: "Seth C",    wins: 1, losses: 4, streak: "🧊 L3",  ranking: 6  },
+    { name: "Larin D",   wins: 5, losses: 1, streak: "🔥 W4",  ranking: 2  },
+    { name: "Isaac T",   wins: 0, losses: 0, streak: "—",  ranking: 12  },
+    { name: "Amir A",    wins: 1, losses: 3, streak: "🧊 L3",  ranking: 11  },
+    { name: "Kaili G",   wins: 0, losses: 0, streak: "—",  ranking: 10  },
+    { name: "Zaeem N",   wins: 0, losses: 4, streak: "🧊 L4",  ranking: 13  },
+    { name: "Hunter P",  wins: 3, losses: 3, streak: "🧊 L2",  ranking: 8 },
+    { name: "Jace M",      wins: 0, losses: 0, streak: "—", ranking: 15 },
+    { name: "Aryaman G",  wins: 0, losses: 0, streak: "—", ranking: 14 },
+    { name: "Hilson K",   wins: 0, losses: 1, streak: "L1", ranking: 9 },
+    { name: "Anthony A", wins: 5, losses: 2, streak: "🔥 W3", ranking: 4 },
+    { name: "Monson K",  wins: 3, losses: 5, streak: "🧊 L3",  ranking: 5 },
   ];
 
   // ── EDIT MATCH HISTORY HERE ───────────────────────────────────────
@@ -1473,7 +1475,51 @@ footer{ flex-direction:column; text-align:center; }
     { player: "Ansh J",    type: "loss", opponent: "Larin D",  myScore: 7,  oppScore: 15,  date: "June 7, 2026" },
     { player: "Parker G",    type: "friendly", opponent: "Anthony A",  myScore: 7,  oppScore: 1,  date: "June 7, 2026" },
     { player: "Anthony A",    type: "friendly", opponent: "Parker G",  myScore: 1,  oppScore: 7,  date: "June 7, 2026" },
-   
+    { player: "Amir A",    type: "win", opponent: "Zaeem N",  myScore: 11,  oppScore: 3,  date: "June 8, 2026" },
+    { player: "Zaeem N",    type: "loss", opponent: "Amir A",  myScore: 3,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Hunter P",    type: "win", opponent: "Zaeem N",  myScore: 11,  oppScore: 0,  date: "June 8, 2026" },
+    { player: "Zaeem N",    type: "loss", opponent: "Hunter P",  myScore: 0,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Zaeem N",  myScore: 11,  oppScore: 0,  date: "June 8, 2026" },
+    { player: "Zaeem N",    type: "loss", opponent: "Parker G",  myScore: 0,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Seth C",  myScore: 11,  oppScore: 1,  date: "June 8, 2026" },
+    { player: "Seth C",    type: "loss", opponent: "Parker G",  myScore: 1,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "win", opponent: "Amir A",  myScore: 11,  oppScore: 1,  date: "June 8, 2026" },
+    { player: "Amir A",    type: "loss", opponent: "Monson K",  myScore: 1,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Monson K",  myScore: 11,  oppScore: 1,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "loss", opponent: "Parker G",  myScore: 1,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Ansh J",    type: "win", opponent: "Hunter P",  myScore: 15,  oppScore: 6,  date: "June 8, 2026" },
+    { player: "Hunter P",    type: "loss", opponent: "Ansh J",  myScore: 6,  oppScore: 15,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "win", opponent: "Zaeem N",  myScore: 11,  oppScore: 2,  date: "June 8, 2026" },
+    { player: "Zaeem N",    type: "loss", opponent: "Monson K",  myScore: 2,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Anthony A",    type: "win", opponent: "Grady B",  myScore: 15,  oppScore: 13,  date: "June 8, 2026" },
+    { player: "Grady B",    type: "loss", opponent: "Anthony A",  myScore: 13,  oppScore: 15,  date: "June 8, 2026" },
+    { player: "Larin D",    type: "win", opponent: "Grady B",  myScore: 11,  oppScore: 0,  date: "June 8, 2026" },
+    { player: "Grady B",    type: "loss", opponent: "Larin D",  myScore: 0,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Hunter P",    type: "win", opponent: "Monson K",  myScore: 11,  oppScore: 2,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "loss", opponent: "Hunter P",  myScore: 2,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Anthony A",    type: "win", opponent: "Amir A",  myScore: 11,  oppScore: 3,  date: "June 8, 2026" },
+    { player: "Amir A",    type: "loss", opponent: "Anthony A",  myScore: 3,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Ansh J",    type: "win", opponent: "Seth C",  myScore: 15,  oppScore: 12,  date: "June 8, 2026" },
+    { player: "Seth C",    type: "loss", opponent: "Ansh J",  myScore: 12,  oppScore: 15,  date: "June 8, 2026" },
+    { player: "Anthony A",    type: "win", opponent: "Hilson K",  myScore: 15,  oppScore: 4,  date: "June 8, 2026" },
+    { player: "Hilson K",    type: "loss", opponent: "Anthony A",  myScore: 4,  oppScore: 15,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "win", opponent: "Grady B",  myScore: 15,  oppScore: 4,  date: "June 8, 2026" },
+    { player: "Grady B",    type: "loss", opponent: "Monson K",  myScore: 4,  oppScore: 15,  date: "June 8, 2026" },
+    { player: "Ansh J",    type: "win", opponent: "Monson K",  myScore: 16,  oppScore: 14,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "loss", opponent: "Ansh J",  myScore: 14,  oppScore: 16,  date: "June 8, 2026" },
+    { player: "Anthony A",    type: "win", opponent: "Seth C",  myScore: 15,  oppScore: 6,  date: "June 8, 2026" },
+    { player: "Seth C",    type: "loss", opponent: "Anthony A",  myScore: 6,  oppScore: 15,  date: "June 8, 2026" },
+    { player: "Hunter P",    type: "win", opponent: "Amir A",  myScore: 11,  oppScore: 2,  date: "June 8, 2026" },
+    { player: "Amir A",    type: "loss", opponent: "Hunter P",  myScore: 2,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Parker G",    type: "win", opponent: "Grady B",  myScore: 11,  oppScore: 0,  date: "June 8, 2026" },
+    { player: "Grady B",    type: "loss", opponent: "Parker G",  myScore: 0,  oppScore: 11,  date: "June 8, 2026" },
+    { player: "Larin D",    type: "win", opponent: "Monson K",  myScore: 15,  oppScore: 12,  date: "June 8, 2026" },
+    { player: "Monson K",    type: "loss", opponent: "Larin D",  myScore: 12,  oppScore: 15,  date: "June 8, 2026" },
+    
+
+    
+
+
 
   ];
   // ──────────────────────────────────────────────────────────────────
